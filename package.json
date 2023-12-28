@@ -1,0 +1,23 @@
+{
+  "name": "parkrun Event Summary",
+  "version": "1.0.0",
+  "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json script.js style.css i;mv pes.zip pes.xpi;"
+  },
+  "author": "Rich Boakes <rich@boakes.org>",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "eslint-config-portsoc": "^1.0.1"
+  },
+  "eslintConfig": {
+    "extends": "portsoc",
+    "root": true,
+    "env": {
+      "browser": true
+    }
+  }
+}

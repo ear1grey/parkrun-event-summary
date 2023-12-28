@@ -1,0 +1,72 @@
+ 
+
+body {
+}
+
+#infographic {
+    display: grid;
+    background: #3F3F78;
+    color: white;
+    min-width: 100%;
+    min-height: 20em;
+    grid-template-areas: "header header date"
+                         "gender pb other"
+                         "milestone milestone misc";
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+}
+
+#infographic h1{
+    color: white;
+}
+
+
+#infographic > .event-location {
+    grid-area: header;
+    padding: 1em;
+}
+
+#infographic > .event-date {
+    grid-area: date;
+    padding: 1em;
+}
+
+#infographic > .event-date > h1 {
+    text-align: right;
+}
+
+#infographic > .event-location > h1 {
+   text-align: left;
+}
+
+
+#gender-donut {
+    grid-area: gender;
+    position: relative;
+}
+
+#main .donut figcaption {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    gap: 0;
+}
+
+#main .donut figcaption * {
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+#main .donut figcaption h1 {
+    margin-top: 1em;
+    line-height: 0.75em;
+}

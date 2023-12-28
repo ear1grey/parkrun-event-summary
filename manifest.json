@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "parkrun Event Summary",
+  "version": "1.0.0",
+  "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
+  "icons": {
+    "16": "i/logo16.png",
+    "48": "i/logo48.png",
+    "128": "i/logo128.png"
+  },
+  "content_scripts": [
+    {
+     "matches": ["*://*/*"],
+      "js": ["chart.js", "script.js"],
+      "run_at": "document_end",
+      "css" : ["style.css"]
+     }
+  ],
+  "permissions": ["activeTab"]
+}
