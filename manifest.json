@@ -11,7 +11,7 @@
   "content_scripts": [
     {
      "matches": ["*://*/*"],
-      "js": ["chart.js", "script.js"],
+      "js": ["src/lib/chart.js", "src/plugins/gender.js", "src/plugins/pb.js", "src/script.js"],
       "run_at": "document_end",
       "css" : ["style.css"]
      }

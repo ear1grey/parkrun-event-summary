@@ -1,8 +1,9 @@
 {
-  "name": "parkrun Event Summary",
+  "name": "parkrunEventSummary",
   "version": "1.0.0",
   "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
   "main": "script.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json script.js style.css i;mv pes.zip pes.xpi;"

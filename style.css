@@ -42,6 +42,13 @@ body {
 
 #gender-donut {
     grid-area: gender;
+}
+
+#gender-pb {
+    grid-area: pb;
+}
+
+#main .donut {
     position: relative;
 }
 

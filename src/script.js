@@ -1,6 +1,8 @@
+
 const c1 = '#3e95cd';
 const c2 = '#8e5ea2';
-const c3 = '#999999';
+const c3 = '#5ea28e';
+const c4 = '#999999';
 
 function extractFinishers() {
   const table = document.querySelector("table.Results-table");
@@ -42,54 +44,16 @@ function extractFinisherRow(row) {
 
 function createInfographicElement() {
   let infographic = document.querySelector("#infographic");
-  if (!infographic) {
+  const header = document.querySelector(".Results-header");
+  if (header && !infographic) {
     infographic = document.createElement('div');
     infographic.id = 'infographic';
-    infographic.innerHTML = `<code>Preparing Charts...</code>`
-    document.querySelector(".Results-header").prepend(infographic);
+    infographic.innerHTML = `<code>Preparing Charts...</code>`;
+    header.prepend(infographic);
   }
   return infographic;
 }
 
-function createGenderDonut(target, meta) {
-    const fig = document.createElement('figure');
-    fig.id="gender-donut";
-    fig.classList.add("donut");
-    const cap = document.createElement('figcaption');
-    fig.append(cap)
-    const canvas = document.createElement('canvas');
-    fig.append(canvas);
-    target.append(fig);
-  
-    const count = meta.genders.male + meta.genders.female + meta.genders.unknown;
-
-    cap.innerHTML=`<h1>${count}</h1><p>Participants</p>`;
-
-    // Prepare the data for the chart
-    const data = {
-      labels: ['Male', 'Female', 'Unknown'],
-      datasets: [{
-        data: [meta.genders.male, meta.genders.female, meta.genders.unknown],
-        backgroundColor: [c1, c2, c3],
-      }]
-    };
-  
-    // Prepare the options for the chart
-    const options = {
-      color: '#fff',
-      borderColor: 'transparent',
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '70%',
-    };
-  
-    // Create a new Chart.js instance
-    new Chart(canvas, {
-      type: 'doughnut',
-      data: data,
-      options: options
-    });
-}
 
 function createTitle(target) {
   const header = document.createElement('header');
@@ -118,8 +82,9 @@ function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
   infographic.innerHTML = '';
   createTitle(infographic);
-  createGenderDonut(infographic, meta);
   createDate(infographic);
+  createGenderDonut(infographic, meta);
+  createPBDonut(infographic, meta);
 }
 
 function simplify(text) {
@@ -129,7 +94,7 @@ function simplify(text) {
 function extractMeta(finishers) {
   const meta = {};
   meta.genders = {male: 0, female: 0, unknown: 0};
-  meta.achievement = {pb: 0, first: 0, other: 0};
+  meta.achievement = {};
   meta.clubs = {};
   meta.ageGroups = {};
   meta.positions = {};
@@ -137,6 +102,8 @@ function extractMeta(finishers) {
   meta.vols = {};
   meta.ageGrades = {};
   meta.ages = {};
+  meta.firstTimer = {male: 0, female: 0, unknown: 0};
+  meta.pb = {male: 0, female: 0, unknown: 0};
 
   console.log(finishers);
   for (const finisher of finishers) {
@@ -146,7 +113,16 @@ function extractMeta(finishers) {
       meta.genders[finisher.gender]++;
     }
     if (finisher.achievement) {
-      meta.achievement =  (meta.achievement[finisher.achievement] ?? 0) + 1;
+      meta.achievement[finisher.achievement] = (meta.achievement[finisher.achievement] ?? 0) + 1;
+
+      if (finisher.achievement === "First Timer!") {
+        meta.firstTimer[finisher.gender] = meta.firstTimer[finisher.gender] + 1 ?? 1;
+      }
+
+      if (finisher.achievement === "New PB!") {
+        meta.pb[finisher.gender] = meta.pb[finisher.gender] + 1 ?? 1;
+      }
+
     }
     if (finisher.club) {
       meta.clubs[finisher.club] = (meta.clubs[finisher.club] ?? 0) + 1;
@@ -208,7 +184,6 @@ function delayedStart() {
     setTimeout(delayedStart, 5);
   } else {
     createInfographicElement();
-    //setTimeout(start, 1);
     start();
   }
 };
