@@ -14,7 +14,7 @@
 body {
 }
 
-.key {
+#infographic .key {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -26,8 +26,14 @@ body {
     padding: 0.5rem;
 }
 
+#infographic .key div {
+    border-radius: 0.25em;
+}
+
+
 #infographic {
     display: grid;
+    border-radius: 0.25em;
     background: var(--blue2);
     color: white;
     min-width: 100%;
