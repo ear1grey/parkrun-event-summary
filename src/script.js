@@ -1,8 +1,12 @@
-
 const c1 = '#3e95cd';
-const c2 = '#8e5ea2';
+const c2 = "#ffa300";
 const c3 = '#5ea28e';
-const c4 = '#999999';
+const c4 = '#8e5ea2';
+const c5 = '#999999';
+const c6 = "#00ceae";
+const c7 = "#6FC24D";
+const c8 = "#F41C22";
+const c9 = "#00ADEF";
 
 function extractFinishers() {
   const table = document.querySelector("table.Results-table");
@@ -85,6 +89,7 @@ function generateInfographic(meta) {
   createDate(infographic);
   createGenderDonut(infographic, meta);
   createPBDonut(infographic, meta);
+  createFirst(infographic, meta);
 }
 
 function simplify(text) {
@@ -103,6 +108,7 @@ function extractMeta(finishers) {
   meta.ageGrades = {};
   meta.ages = {};
   meta.firstTimer = {male: 0, female: 0, unknown: 0};
+  meta.first = {here: 0, anywhere: 0};
   meta.pb = {male: 0, female: 0, unknown: 0};
 
   console.log(finishers);
@@ -117,12 +123,16 @@ function extractMeta(finishers) {
 
       if (finisher.achievement === "First Timer!") {
         meta.firstTimer[finisher.gender] = meta.firstTimer[finisher.gender] + 1 ?? 1;
+        if (finisher.runs === "1") {
+          meta.first.anywhere++;
+        } else {
+          meta.first.here++;
+        }
       }
 
       if (finisher.achievement === "New PB!") {
         meta.pb[finisher.gender] = meta.pb[finisher.gender] + 1 ?? 1;
       }
-
     }
     if (finisher.club) {
       meta.clubs[finisher.club] = (meta.clubs[finisher.club] ?? 0) + 1;
@@ -132,9 +142,6 @@ function extractMeta(finishers) {
     }
     if (finisher.position) {
       meta.positions[finisher.position] = (meta.positions[finisher.position] ?? 0) + 1;
-    }
-    if (finisher.runs) {
-      meta.runs[finisher.runs] = (meta.runs[finisher.runs] ?? 0) + 1;
     }
     if (finisher.vols) {
       meta.vols[finisher.vols] = (meta.vols[finisher.vols] ?? 0) + 1;
@@ -187,5 +194,15 @@ function delayedStart() {
     start();
   }
 };
+
+function addLegendToKey(key, data) {
+  data.labels.forEach((label, index) => {
+    const legendItem = document.createElement('div');
+    legendItem.style.backgroundColor = data.datasets[0].backgroundColor[index];
+    legendItem.textContent = label;
+    key.append(legendItem);
+  });
+}
+
 
 window.onload = delayedStart;

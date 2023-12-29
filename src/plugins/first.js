@@ -1,7 +1,6 @@
-
-function createPBDonut(target, meta) {
+function createFirst(target, meta) {
   const fig = document.createElement('figure');
-  fig.id="donut-pb";
+  fig.id="donut-first";
   fig.classList.add("donut");
   const cap = document.createElement('figcaption');
   cap.id="pbdetails";
@@ -15,16 +14,16 @@ function createPBDonut(target, meta) {
   fig.append(key);
 
   const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
-  const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown;
+  const firsts = meta.first.here + meta.first.anywhere;
   
-  cap.innerHTML=`<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs/participants*100).toFixed(1)}% of participants</p>`;
+  cap.innerHTML=`<h1>${firsts}</h1><p>First Timers</p><p>${Number(firsts/participants*100).toFixed(1)}% of participants</p>`;
 
   // Prepare the data for the chart
   const data = {
-    labels: ['Male', 'Female', 'No PB'],
+    labels: ['First parkrun', 'First time here', 'Everyone else'],
     datasets: [{
-      data: [meta.pb.male, meta.pb.female, participants - pbs],
-      backgroundColor: [c1, c2, c5],
+      data: [meta.first.anywhere, meta.first.here, participants - firsts],
+      backgroundColor: [c4, c7, c5],
     }]
   };
 
@@ -44,9 +43,8 @@ function createPBDonut(target, meta) {
     }
   };
 
-  
-  // Call the function after creating the chart
-  const chart = new Chart(canvas, {
+  // Create a new Chart.js instance
+  new Chart(canvas, {
     type: 'doughnut',
     data: data,
     options: options

@@ -1,34 +1,54 @@
- 
+:root {
+    --purple: #2b233d;
+    --purple2: #47173F;
+    --apricot: #ffa300;
+    --aquagreen: #00ceae;
+    --green: #6FC24D;
+    --pink: #F41C22;
+    --grey: #2A3436;
+    --blue: #00ADEF;
+    --blue2: #3E3E78;
+    --keysize: 5em;
+} 
 
 body {
 }
 
+.key {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    gap: 0.25rem;
+    padding: 0.5rem;
+}
+
 #infographic {
     display: grid;
-    background: #3F3F78;
+    background: var(--blue2);
     color: white;
     min-width: 100%;
-    min-height: 20em;
     grid-template-areas: "header header date"
-                         "gender pb other"
+                         "gender pb firsttime"
                          "milestone milestone misc";
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto auto auto;
+    gap: 1rem;
+    padding: 1rem;
 }
+
+#infographic > .event-location { grid-area: header; }
+#infographic > .event-date { grid-area: date; }
+#donut-gender { grid-area: gender; }
+#donut-pb     { grid-area: pb; }
+#donut-first  { grid-area: firsttime; }
+
 
 #infographic h1{
-    color: white;
-}
-
-
-#infographic > .event-location {
-    grid-area: header;
-    padding: 1em;
-}
-
-#infographic > .event-date {
-    grid-area: date;
-    padding: 1em;
+    color: var(--apricot);
 }
 
 #infographic > .event-date > h1 {
@@ -37,15 +57,6 @@ body {
 
 #infographic > .event-location > h1 {
    text-align: left;
-}
-
-
-#gender-donut {
-    grid-area: gender;
-}
-
-#gender-pb {
-    grid-area: pb;
 }
 
 #main .donut {
@@ -63,8 +74,12 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1em;
     gap: 0;
+    padding-bottom: var(--keysize);
+}
+
+#main .donut canvas {
+    margin-bottom: var(--keysize);
 }
 
 #main .donut figcaption * {
@@ -74,6 +89,5 @@ body {
 }
 
 #main .donut figcaption h1 {
-    margin-top: 1em;
     line-height: 0.75em;
 }

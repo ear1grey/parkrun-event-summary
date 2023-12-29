@@ -1,12 +1,17 @@
 function createGenderDonut(target, meta) {
     const fig = document.createElement('figure');
-    fig.id="gender-donut";
+    fig.id="donut-gender";
     fig.classList.add("donut");
     const cap = document.createElement('figcaption');
     fig.append(cap)
     const canvas = document.createElement('canvas');
     fig.append(canvas);
     target.append(fig);
+
+    const key = document.createElement('div');
+    key.classList.add("key");
+    fig.append(key);
+  
   
     const count = meta.genders.male + meta.genders.female + meta.genders.unknown;
 
@@ -17,10 +22,12 @@ function createGenderDonut(target, meta) {
       labels: ['Male', 'Female', 'Unknown'],
       datasets: [{
         data: [meta.genders.male, meta.genders.female, meta.genders.unknown],
-        backgroundColor: [c1, c2, c3],
+        backgroundColor: [c1, c2, c5],
       }]
     };
   
+    addLegendToKey(key, data);
+
     // Prepare the options for the chart
     const options = {
       color: '#fff',
@@ -28,6 +35,11 @@ function createGenderDonut(target, meta) {
       responsive: true,
       maintainAspectRatio: false,
       cutout: '70%',
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
     };
   
     // Create a new Chart.js instance
