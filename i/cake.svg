@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="35px" viewBox="0 0 29 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>Cake@1x</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <radialGradient cx="50%" cy="100%" fx="50%" fy="100%" r="190.609659%" gradientTransform="translate(0.500000,1.000000),scale(1.000000,0.500000),rotate(-90.000000),translate(-0.500000,-1.000000)" id="radialGradient-1">
+            <stop stop-color="#FA6400" offset="0%"></stop>
+            <stop stop-color="#FFE200" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Cake">
+            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="28.5" rx="14" ry="6"></ellipse>
+            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="25.5" rx="14" ry="6"></ellipse>
+            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="22.5" rx="14" ry="6"></ellipse>
+            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="19.5" rx="14" ry="6"></ellipse>
+            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="16.5" rx="14" ry="6"></ellipse>
+            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="13.5" rx="14" ry="6"></ellipse>
+            <rect id="Candle" fill="#FFFFFF" x="8" y="3" width="1" height="9"></rect>
+            <rect id="Candle" fill="#FFFFFF" x="14" y="2" width="1" height="9"></rect>
+            <rect id="Candle" fill="#FFFFFF" x="20" y="3" width="1" height="9"></rect>
+            <ellipse id="Flame" fill="url(#radialGradient-1)" cx="8.5" cy="2" rx="1" ry="1"></ellipse>
+            <ellipse id="Flame" fill="url(#radialGradient-1)" cx="14.5" cy="1" rx="1" ry="1"></ellipse>
+            <ellipse id="Flame" fill="url(#radialGradient-1)" cx="20.5" cy="2" rx="1" ry="1"></ellipse>
+        </g>
+    </g>
+</svg>

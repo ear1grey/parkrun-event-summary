@@ -90,6 +90,8 @@ function generateInfographic(meta) {
   createGenderDonut(infographic, meta);
   createPBDonut(infographic, meta);
   createFirst(infographic, meta);
+  createVolunteers(infographic, meta);
+  createAges(infographic, meta);
 }
 
 function simplify(text) {
@@ -154,7 +156,20 @@ function extractMeta(finishers) {
     }
 
   }
+  let totalVols = 0;
+  for (let vol of Object.values(meta.vols)) {
+    totalVols += vol;
+    console.log(totalVols);
+  }
+  meta.totalVols = totalVols;
   return meta;
+}
+
+function extractVolunteers() {
+  const volunteers = {};
+  const volunteerDiv = document.querySelector("div.Results + div p");
+  volunteers.count = volunteerDiv.querySelectorAll("a").length;
+  return volunteers;
 }
 
 function start() {
@@ -172,6 +187,7 @@ function start() {
 
   const finishers = extractFinishers();
   const meta = extractMeta(finishers);
+  meta.volunteers = extractVolunteers();
   meta.finishers = finishers;
   console.log(meta);
   generateInfographic(meta);

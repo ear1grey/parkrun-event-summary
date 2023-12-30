@@ -39,6 +39,8 @@ body {
     min-width: 100%;
     grid-template-areas: "header header date"
                          "gender pb firsttime"
+                         "milestone milestone volunteers"
+                         "milestone milestone ages"
                          "milestone milestone misc";
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto auto auto;
@@ -51,6 +53,8 @@ body {
 #donut-gender { grid-area: gender; }
 #donut-pb     { grid-area: pb; }
 #donut-first  { grid-area: firsttime; }
+#volunteers   { grid-area: volunteers; }
+#ages         { grid-area: ages; }
 
 
 #infographic h1{
@@ -97,3 +101,27 @@ body {
 #main .donut figcaption h1 {
     line-height: 0.75em;
 }
+
+#main .info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    gap: 1em;
+}
+
+#main .info img {
+    width: 3em;
+    vertical-align: middle;
+}
+
+#main .info p {
+    margin: 0;
+    text-align: left;
+}
+
+#main .info p img {
+    margin-right: 1em;
+}
+ 
