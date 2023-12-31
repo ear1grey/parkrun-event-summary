@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="29px" height="35px" viewBox="0 0 29 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
-    <title>Cake@1x</title>
-    <desc>Created with Sketch.</desc>
+<svg width="29px" height="32px" viewBox="0 0 29 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
         <radialGradient cx="50%" cy="100%" fx="50%" fy="100%" r="190.609659%" gradientTransform="translate(0.500000,1.000000),scale(1.000000,0.500000),rotate(-90.000000),translate(-0.500000,-1.000000)" id="radialGradient-1">
             <stop stop-color="#FA6400" offset="0%"></stop>
             <stop stop-color="#FFE200" offset="100%"></stop>
         </radialGradient>
     </defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Cake">
-            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="28.5" rx="14" ry="6"></ellipse>
-            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="25.5" rx="14" ry="6"></ellipse>
-            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="22.5" rx="14" ry="6"></ellipse>
-            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="19.5" rx="14" ry="6"></ellipse>
-            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="16.5" rx="14" ry="6"></ellipse>
-            <ellipse id="Oval" stroke="#FFFFFF" fill="#FF9CC8" cx="14.5" cy="13.5" rx="14" ry="6"></ellipse>
-            <rect id="Candle" fill="#FFFFFF" x="8" y="3" width="1" height="9"></rect>
-            <rect id="Candle" fill="#FFFFFF" x="14" y="2" width="1" height="9"></rect>
-            <rect id="Candle" fill="#FFFFFF" x="20" y="3" width="1" height="9"></rect>
-            <ellipse id="Flame" fill="url(#radialGradient-1)" cx="8.5" cy="2" rx="1" ry="1"></ellipse>
-            <ellipse id="Flame" fill="url(#radialGradient-1)" cx="14.5" cy="1" rx="1" ry="1"></ellipse>
-            <ellipse id="Flame" fill="url(#radialGradient-1)" cx="20.5" cy="2" rx="1" ry="1"></ellipse>
-        </g>
+    <g id="Cake" stroke="#FFFFFF" stroke-width="1" fill="none">
+        <path d="M14.5,7.5 C6.73702483,7.5 0.5,10.2959077 0.5,13.5 C0.5,13.9266709 0.610373689,14.3497568 0.830275252,14.7668517 L0.953182687,14.9999744 L0.830328231,15.2331251 C0.610277706,15.6507326 0.5,16.0735133 0.5,16.5 C0.5,16.9266709 0.610373689,17.3497568 0.830275252,17.7668517 L0.953182687,17.9999744 L0.830328231,18.2331251 C0.610277706,18.6507326 0.5,19.0735133 0.5,19.5 C0.5,19.9266709 0.610373689,20.3497568 0.830275252,20.7668517 L0.953182687,20.9999744 L0.830328231,21.2331251 C0.610277706,21.6507326 0.5,22.0735133 0.5,22.5 C0.5,22.9266709 0.610373689,23.3497568 0.830275252,23.7668517 L0.953182687,23.9999744 L0.830328231,24.2331251 C0.610277706,24.6507326 0.5,25.0735133 0.5,25.5 C0.5,28.7040923 6.73702483,31.5 14.5,31.5 C22.2629752,31.5 28.5,28.7040923 28.5,25.5 C28.5,25.0733271 28.3896302,24.6508145 28.1695296,24.2347763 L28.0460348,24.0013441 L28.1692132,23.7677448 C28.3895692,23.3498548 28.5,22.9267819 28.5,22.5 C28.5,22.0733271 28.3896302,21.6508145 28.1695296,21.2347763 L28.0460348,21.0013441 L28.1692132,20.7677448 C28.3895692,20.3498548 28.5,19.9267819 28.5,19.5 C28.5,19.0733271 28.3896302,18.6508145 28.1695296,18.2347763 L28.0460348,18.0013441 L28.1692132,17.7677448 C28.3895692,17.3498548 28.5,16.9267819 28.5,16.5 C28.5,16.0733271 28.3896302,15.6508145 28.1695296,15.2347763 L28.0460348,15.0013441 L28.1692132,14.7677448 C28.3895692,14.3498548 28.5,13.9267819 28.5,13.5 C28.5,10.2959077 22.2629752,7.5 14.5,7.5 Z" id="Path" stroke="#FFFFFF"></path>
+        <ellipse id="Oval" stroke="#FFFFFF" cx="14.5" cy="13.5" rx="14" ry="6"></ellipse>
+        <rect id="Candle" stroke="none" fill="#FFFFFF" x="8" y="3" width="1" height="9"></rect>
+        <rect id="Candle" stroke="none" fill="#FFFFFF" x="14" y="2" width="1" height="9"></rect>
+        <rect id="Candle" stroke="none" fill="#FFFFFF" x="20" y="3" width="1" height="9"></rect>
+        <ellipse id="Flame" stroke="none" fill="url(#radialGradient-1)" cx="8.5" cy="2" rx="1" ry="1"></ellipse>
+        <ellipse id="Flame" stroke="none" fill="url(#radialGradient-1)" cx="14.5" cy="1" rx="1" ry="1"></ellipse>
+        <ellipse id="Flame" stroke="none" fill="url(#radialGradient-1)" cx="20.5" cy="2" rx="1" ry="1"></ellipse>
     </g>
 </svg>

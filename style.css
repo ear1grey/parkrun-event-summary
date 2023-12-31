@@ -36,9 +36,9 @@
     min-width: 100%;
     grid-template-areas: "header header date"
                          "gender pb firsttime"
-                         "milestone milestone volunteers"
-                         "milestone milestone ages"
-                         "milestone milestone misc";
+                         "dmilestones ages distance"
+                         "dmilestones agegrade distance"
+                         "dmilestones volunteers distance";
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto auto auto;
     gap: 1rem;
@@ -50,8 +50,11 @@
 #donut-gender { grid-area: gender; }
 #donut-pb     { grid-area: pb; }
 #donut-first  { grid-area: firsttime; }
-#volunteers   { grid-area: volunteers; }
+#dmilestones  { grid-area: dmilestones; }
 #ages         { grid-area: ages; }
+#agegrade     { grid-area: agegrade; }
+#volunteers   { grid-area: volunteers; }
+#distance     { grid-area: distance; }
 
 
 #infographic h1{
@@ -120,5 +123,10 @@
 
 #main .info p img {
     margin-right: 1em;
+}
+
+#distance .info {
+    flex-direction: column;
+    align-items: flex-start;
 }
  

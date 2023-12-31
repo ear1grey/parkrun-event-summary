@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="2 2 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke-width="1" fill="none" fill-rule="evenodd" id="gauge" stroke="#FFFFFF">
+        <path d="M17.4900825,8.45448141 C15.8296861,16.4795962 14.9900825,21.0398942 14.9900825,22 C14.9900825,23.3807119 16.1093707,24.5 17.4900825,24.5 C18.8707944,24.5 19.9900825,23.3807119 19.9900825,22 C19.9900825,21.0398942 19.150479,16.4795962 17.4900825,8.45448141 Z" id="Oval" transform="translate(17.490083, 15.500000) rotate(-327.000000) translate(-17.490083, -15.500000) "></path>
+        <circle id="Oval" cx="14" cy="21" r="1"></circle>
+        <path d="M24,10 C18,6 10,6 4,10" id="Path-3" stroke-linecap="round" stroke-linejoin="round"></path>
+        <ellipse id="Oval" transform="translate(5.500000, 13.000000) rotate(-15.000000) translate(-5.500000, -13.000000) " cx="5.5" cy="13" rx="1" ry="1.5"></ellipse>
+        <ellipse id="Oval" cx="15" cy="10.5" rx="1" ry="1.5"></ellipse>
+        <path d="M13.5,9 L11.5,9 L11.5,10 C12.8333333,10 13.5,10.3333333 13.5,11 C13.5,11.6666667 12.8333333,12 11.5,12" id="Path-4" stroke-linecap="round"></path>
+    </g>
+</svg>

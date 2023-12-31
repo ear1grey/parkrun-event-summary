@@ -1,16 +1,25 @@
 const c1 = '#3e95cd';
-const c2 = "#ffa300";
+const c2 = '#ffa300';
 const c3 = '#5ea28e';
 const c4 = '#8e5ea2';
 const c5 = '#999999';
-const c6 = "#00ceae";
-const c7 = "#6FC24D";
-const c8 = "#F41C22";
-const c9 = "#00ADEF";
+const c6 = '#00ceae';
+const c7 = '#6FC24D';
+const c8 = '#F41C22';
+const c9 = '#00ADEF';
+
+const milestoneColourList = {
+  c25: '#4D3691',
+  c50: '#FF0200',
+  c100: '#222222',
+  c250: '#1EA073',
+  c500: '#274EC8',
+  c1000: '#BBBBBB',
+};
 
 function extractFinishers() {
-  const table = document.querySelector("table.Results-table");
-  const rows = table.querySelectorAll(".Results-table-row");
+  const table = document.querySelector('table.Results-table');
+  const rows = table.querySelectorAll('.Results-table-row');
   const finishers = [];
 
   for (const row of rows) {
@@ -47,12 +56,12 @@ function extractFinisherRow(row) {
 }
 
 function createInfographicElement() {
-  let infographic = document.querySelector("#infographic");
-  const header = document.querySelector(".Results-header");
+  let infographic = document.querySelector('#infographic');
+  const header = document.querySelector('.Results-header');
   if (header && !infographic) {
     infographic = document.createElement('div');
     infographic.id = 'infographic';
-    infographic.innerHTML = `<code>Preparing Charts...</code>`;
+    infographic.innerHTML = '<code>Preparing Charts...</code>';
     header.prepend(infographic);
   }
   return infographic;
@@ -61,10 +70,10 @@ function createInfographicElement() {
 
 function createTitle(target) {
   const header = document.createElement('header');
-  header.classList.add("event-location");
+  header.classList.add('event-location');
 
   const h1 = document.createElement('h1');
-  h1.textContent = document.title.split(" | ")[1];
+  h1.textContent = document.title.split(' | ')[1];
 
   header.append(h1);
   target.append(header);
@@ -72,10 +81,10 @@ function createTitle(target) {
 
 function createDate(target) {
   const header = document.createElement('div');
-  header.classList.add("event-date");
+  header.classList.add('event-date');
 
   const h1 = document.createElement('h1');
-  const d = document.querySelector("span.format-date");
+  const d = document.querySelector('span.format-date');
   h1.textContent = d.textContent.trim();
 
   header.append(h1);
@@ -89,18 +98,21 @@ function generateInfographic(meta) {
   createDate(infographic);
   createGenderDonut(infographic, meta);
   createPBDonut(infographic, meta);
+  createMilestonesDonut(infographic, meta);
   createFirst(infographic, meta);
-  createVolunteers(infographic, meta);
   createAges(infographic, meta);
+  createTopAgeGrade(infographic, meta);
+  createVolunteers(infographic, meta);
+  createTotalDistance(infographic, meta);
 }
 
 function simplify(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 function extractMeta(finishers) {
   const meta = {};
-  meta.genders = {male: 0, female: 0, unknown: 0};
+  meta.genders = { male: 0, female: 0, unknown: 0 };
   meta.achievement = {};
   meta.clubs = {};
   meta.ageGroups = {};
@@ -109,30 +121,32 @@ function extractMeta(finishers) {
   meta.vols = {};
   meta.ageGrades = {};
   meta.ages = {};
-  meta.firstTimer = {male: 0, female: 0, unknown: 0};
-  meta.first = {here: 0, anywhere: 0};
-  meta.pb = {male: 0, female: 0, unknown: 0};
+  meta.firstTimer = { male: 0, female: 0, unknown: 0 };
+  meta.first = { here: 0, anywhere: 0 };
+  meta.pb = { male: 0, female: 0, unknown: 0 };
+  meta.milestones = {};
+  meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
+  meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
 
-  console.log(finishers);
+
   for (const finisher of finishers) {
-    console.log(finisher);
     if (finisher) {
-      finisher.gender = finisher?.gender?.toLowerCase() ?? "unknown";
+      finisher.gender = finisher?.gender?.toLowerCase() ?? 'unknown';
       meta.genders[finisher.gender]++;
     }
     if (finisher.achievement) {
       meta.achievement[finisher.achievement] = (meta.achievement[finisher.achievement] ?? 0) + 1;
 
-      if (finisher.achievement === "First Timer!") {
+      if (finisher.achievement === 'First Timer!') {
         meta.firstTimer[finisher.gender] = meta.firstTimer[finisher.gender] + 1 ?? 1;
-        if (finisher.runs === "1") {
+        if (finisher.runs === '1') {
           meta.first.anywhere++;
         } else {
           meta.first.here++;
         }
       }
 
-      if (finisher.achievement === "New PB!") {
+      if (finisher.achievement === 'New PB!') {
         meta.pb[finisher.gender] = meta.pb[finisher.gender] + 1 ?? 1;
       }
     }
@@ -154,34 +168,44 @@ function extractMeta(finishers) {
     if (finisher.age) {
       meta.ages[finisher.age] = (meta.ages[finisher.age] ?? 0) + 1;
     }
-
+    if (finisher.runs) {
+      if (meta.milestones.official[finisher.runs]) {
+        meta.milestones.official[finisher.runs].push(finisher.name);
+      }
+      if (meta.milestones.unofficial[finisher.runs]) {
+        meta.milestones.unofficial[finisher.runs].push(finisher.name);
+      }
+    }
   }
-  let totalVols = 0;
-  for (let vol of Object.values(meta.vols)) {
+  let totalVols = '0';
+  for (const vol of Object.values(meta.vols)) {
     totalVols += vol;
-    console.log(totalVols);
   }
   meta.totalVols = totalVols;
+  console.log(meta);
   return meta;
 }
 
 function extractVolunteers() {
   const volunteers = {};
-  const volunteerDiv = document.querySelector("div.Results + div p");
-  volunteers.count = volunteerDiv.querySelectorAll("a").length;
+  const volunteerDiv = document.querySelector('div.Results + div p');
+  volunteers.count = volunteerDiv.querySelectorAll('a').length;
   return volunteers;
 }
 
 function start() {
-  console.log("go");
+  Chart.register(ChartDataLabels);
+  Chart.defaults.set('plugins.datalabels', {
+    color: '#FFFFFF',
+  });
+
   const url = String(window.location.href);
 
-  const isLatestResultsPage = url.includes("/latestresults")
+  const isLatestResultsPage = url.includes('/latestresults');
   const isPreviousResultsPage = /\/results\/\d+\//.test(url);
   const isResultsPage = isLatestResultsPage || isPreviousResultsPage;
 
   if (!isResultsPage) {
-    console.log("Not a results page.");
     return;
   }
 
@@ -189,18 +213,15 @@ function start() {
   const meta = extractMeta(finishers);
   meta.volunteers = extractVolunteers();
   meta.finishers = finishers;
-  console.log(meta);
   generateInfographic(meta);
-
 }
 
 
 function delayedStart() {
-  if (document.title.includes("Human")) {
-    console.log("waiting");
+  if (document.title.includes('Human')) {
     // try and get a handle on the results header so we can
     // add a loading message
-    const header = document.querySelector(".Results-header");
+    const header = document.querySelector('.Results-header');
     if (header) {
       createInfographicElement();
     }
@@ -209,7 +230,7 @@ function delayedStart() {
     createInfographicElement();
     start();
   }
-};
+}
 
 function addLegendToKey(key, data) {
   data.labels.forEach((label, index) => {
