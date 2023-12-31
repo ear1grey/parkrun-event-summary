@@ -10,8 +10,8 @@
   },
   "content_scripts": [
     {
-     "matches": ["*://*/*"],
-      "js": ["src/lib/chart.js", "src/plugins/gender.js", "src/plugins/volunteers.js", "src/plugins/pb.js", "src/plugins/first.js", "src/script.js"],
+     "matches": ["https://*.parkrun.org.uk/*/results/*"],
+      "js": ["src/lib/chart.js", "src/lib/labels.js", "src/plugins/milestones.js", "src/plugins/gender.js", "src/plugins/volunteers.js", "src/plugins/pb.js", "src/plugins/first.js", "src/script.js"],
       "run_at": "document_end",
       "css" : ["style.css"]
      }
