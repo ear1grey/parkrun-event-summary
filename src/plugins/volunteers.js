@@ -4,7 +4,7 @@ function createVolunteers(target, meta) {
   fig.id = 'volunteers';
   fig.classList.add('info');
   target.append(fig);
-  const viz = chrome.runtime.getURL('i/hiviz.svg');
+  const viz = chrome.runtime.getURL('src/i/hiviz.svg');
   fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Hi-Viz<br>Heroes</p>`;
 }
 
@@ -28,7 +28,7 @@ function createAges(target, meta) {
   }
 
   const averageAge = Number(total / count).toFixed(0);
-  const cake = chrome.runtime.getURL('i/cake.svg');
+  const cake = chrome.runtime.getURL('src/i/cake.svg');
 
   fig.innerHTML = `<img alt="A birthday cake" src="${cake}"><p>Average<br>Age: ${averageAge}</p>`;
 }
@@ -44,7 +44,7 @@ function createTopAgeGrade(target, meta) {
   const ageGrades = Object.keys(meta.ageGrades);
   const highestAgeGrade = Math.max(...ageGrades);
 
-  const gauge = chrome.runtime.getURL('i/gauge.svg');
+  const gauge = chrome.runtime.getURL('src/i/gauge.svg');
 
   fig.innerHTML = `<img alt="A gauge" src="${gauge}"><p>Top Age<br>Grade: ${highestAgeGrade}%</p>`;
 }
@@ -68,7 +68,7 @@ function createTotalDistance(target, meta) {
   const earthCircumference = 40075;
   const earthLaps = Math.ceil(earthCircumference / todaysDistance);
 
-  const tape = chrome.runtime.getURL('i/tape.svg');
+  const tape = chrome.runtime.getURL('src/i/tape.svg');
 
   fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today!  That's enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
 }

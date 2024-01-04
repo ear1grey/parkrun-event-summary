@@ -4,23 +4,22 @@
   "version": "1.0.0",
   "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
   "icons": {
-    "16": "i/logo16.png",
-    "48": "i/logo48.png",
-    "128": "i/logo128.png"
+    "16": "src/i/logo16.png",
+    "48": "src/i/logo48.png",
+    "128": "src/i/logo128.png"
   },
   "content_scripts": [
     {
      "matches": ["https://*.parkrun.org.uk/*/results/*"],
       "js": ["src/lib/chart.js", "src/lib/labels.js", "src/plugins/milestones.js", "src/plugins/gender.js", "src/plugins/volunteers.js", "src/plugins/pb.js", "src/plugins/first.js", "src/script.js"],
       "run_at": "document_end",
-      "css" : ["style.css"]
+      "css" : ["src/style.css"]
      }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["i/*.svg"],
+      "resources": ["src/i/*.svg"],
       "matches": ["*://*/*"]
     }
-  ],
-  "permissions": ["activeTab"]
+  ]
 }

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json script.js style.css i;mv pes.zip pes.xpi;"
+    "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json src i;cp pes.zip pes.xpi;"
   },
   "author": "Rich Boakes <rich@boakes.org>",
   "license": "ISC",
