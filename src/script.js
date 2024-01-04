@@ -72,10 +72,14 @@ function createTitle(target) {
   const header = document.createElement('header');
   header.classList.add('event-location');
 
+  const rhh1 = document.querySelector('.Results-header h1');
+  const parkrunName = rhh1.textContent.trim();
+
+  const rhspans = document.querySelectorAll('.Results-header span');
+  const parkrunNumber = [...rhspans].at(-1).textContent.trim();
+
   const h1 = document.createElement('h1');
-  const parkrunName = document.title.split(' | ')[1];
-  const parkrunNumber = document.title.split(' | ')[2].split(' ')[1];
-  h1.textContent = `${parkrunName} #${parkrunNumber}`;
+  h1.textContent = `${parkrunName} ${parkrunNumber}`;
 
   header.append(h1);
   target.append(header);
@@ -130,16 +134,38 @@ function extractMeta(finishers) {
   meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
   meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
 
+  const genderTerms = {
+    female: ["Female", "Kvinna", "Kvinde", "Kobieta", "Femme", "Frau", "Weiblich", "Naiset", "Vrouw", "Nainen", "Donna", "女子", "Kobieta", "Kvinne"],
+    male: ["Male", "Man", "Mann", "Mand", "Männlich", "Homme", "Miehet", "Mężczyzna", "男子"]
+  };
 
   for (const finisher of finishers) {
-    if (finisher) {
-      finisher.gender = finisher?.gender?.toLowerCase() ?? 'unknown';
-      meta.genders[finisher.gender]++;
+
+    if (finisher.gender) {
+      if (genderTerms.male.includes(finisher.gender)) {
+        meta.genders.male++;
+        finisher.gender = "male";
+      } else if (genderTerms.female.includes(finisher.gender)) {
+        meta.genders.female++; 
+        finisher.gender = "female";
+      } else {
+        meta.genders.unknown++;
+        finisher.gender = "unknown";
+      }
+    } else {
+      meta.genders.unknown++;
+      finisher.gender = "unknown";
     }
+
     if (finisher.achievement) {
       meta.achievement[finisher.achievement] = (meta.achievement[finisher.achievement] ?? 0) + 1;
 
-      if (finisher.achievement === 'First Timer!') {
+      const firstTimer = ["First Timer!", "Første gang!", "Première perf' !", "Erstläufer!", "Nieuwe loper!", "Ensikertalainen!", "Prima volta!", "初参加!", "Debiutant", "Debut!"];
+      const newPB = ["New PB!", "Neue PB!", "Meilleure perf' !", "Nieuw PR!", "Ny PB!", "Oma ennätys!", "Nuovo PB!", "自己ベスト!", "Nowy PB!", "Nytt PB!"];
+
+      // uk, at, de, nl, dk, fi, fr, jp, no, pl, se
+
+      if (firstTimer.includes(finisher.achievement)) {
         meta.firstTimer[finisher.gender] = meta.firstTimer[finisher.gender] + 1 ?? 1;
         if (finisher.runs === '1') {
           meta.first.anywhere++;
@@ -148,7 +174,7 @@ function extractMeta(finishers) {
         }
       }
 
-      if (finisher.achievement === 'New PB!') {
+      if (newPB.includes(finisher.achievement)) {
         meta.pb[finisher.gender] = meta.pb[finisher.gender] + 1 ?? 1;
       }
     }

@@ -10,8 +10,31 @@
   },
   "content_scripts": [
     {
-     "matches": ["https://*.parkrun.org.uk/*/results/*"],
-      "js": ["src/lib/chart.js", "src/lib/labels.js", "src/plugins/milestones.js", "src/plugins/gender.js", "src/plugins/volunteers.js", "src/plugins/pb.js", "src/plugins/first.js", "src/script.js"],
+      "matches": [
+        "*://*.parkrun.ca/*/results/*",
+        "*://*.parkrun.co.at/*/results/*",
+        "*://*.parkrun.co.nl/*/results/*",
+        "*://*.parkrun.co.nz/*/results/*",
+        "*://*.parkrun.co.za/*/results/*",
+        "*://*.parkrun.com.au/*/results/*",
+        "*://*.parkrun.com.de/*/results/*",
+        "*://*.parkrun.dk/*/results/*",
+        "*://*.parkrun.fi/*/results/*",
+        "*://*.parkrun.fr/*/results/*",
+        "*://*.parkrun.ie/*/results/*",
+        "*://*.parkrun.it/*/results/*",
+        "*://*.parkrun.jp/*/results/*",
+        "*://*.parkrun.my/*/results/*",
+        "*://*.parkrun.no/*/results/*",
+        "*://*.parkrun.org.uk/*/results/*",
+        "*://*.parkrun.pl/*/results/*",
+        "*://*.parkrun.ru/*/results/*",
+        "*://*.parkrun.se/*/results/*",
+        "*://*.parkrun.sg/*/results/*",
+        "*://*.parkrun.us/*/results/*"
+      ],
+    
+     "js": ["src/lib/chart.js", "src/lib/labels.js", "src/plugins/milestones.js", "src/plugins/gender.js", "src/plugins/volunteers.js", "src/plugins/pb.js", "src/plugins/first.js", "src/script.js"],
       "run_at": "document_end",
       "css" : ["src/style.css"]
      }
