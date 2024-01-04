@@ -20,7 +20,9 @@ function createAges(target, meta) {
 
   for (const group in meta.ageGroups) {
     const ages = group.replace(/\D/g, '-').split('-').filter(Boolean);
+    if(ages.length === 0) continue;
     const avgAge = (parseInt(ages[0]) + parseInt(ages[ages.length - 1])) / 2;
+    console.log(group, ages, avgAge);
     total += avgAge * meta.ageGroups[group];
     count += meta.ageGroups[group];
   }
