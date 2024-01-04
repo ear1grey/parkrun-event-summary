@@ -73,7 +73,9 @@ function createTitle(target) {
   header.classList.add('event-location');
 
   const h1 = document.createElement('h1');
-  h1.textContent = document.title.split(' | ')[1];
+  const parkrunName = document.title.split(' | ')[1];
+  const parkrunNumber = document.title.split(' | ')[2].split(' ')[1];
+  h1.textContent = `${parkrunName} #${parkrunNumber}`;
 
   header.append(h1);
   target.append(header);
