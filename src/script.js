@@ -8,14 +8,216 @@ const c7 = '#6FC24D';
 const c8 = '#F41C22';
 const c9 = '#00ADEF';
 
-const milestoneColourList = {
-  c25: '#4D3691',
-  c50: '#FF0200',
-  c100: '#222222',
-  c250: '#1EA073',
-  c500: '#274EC8',
-  c1000: '#BBBBBB',
-};
+function createVolunteers(target, meta) {
+  const fig = document.createElement('div');
+  fig.id = 'volunteers';
+  fig.classList.add('info');
+  target.append(fig);
+  const viz = chrome.runtime.getURL('src/i/hiviz.svg');
+  fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Hi-Viz<br>Heroes</p>`;
+}
+
+
+function createAges(target, meta) {
+  const fig = document.createElement('div');
+  fig.id = 'ages';
+  fig.classList.add('info');
+  target.append(fig);
+
+  let total = 0;
+  let count = 0;
+
+  for (const group in meta.ageGroups) {
+    const ages = group.replace(/\D/g, '-').split('-').filter(Boolean);
+    if(ages.length === 0) continue;
+    const avgAge = (parseInt(ages[0]) + parseInt(ages[ages.length - 1])) / 2;
+    console.log(group, ages, avgAge);
+    total += avgAge * meta.ageGroups[group];
+    count += meta.ageGroups[group];
+  }
+
+  const averageAge = Number(total / count).toFixed(0);
+  const cake = chrome.runtime.getURL('src/i/cake.svg');
+
+  fig.innerHTML = `<img alt="A birthday cake" src="${cake}"><p>Average<br>Age: ${averageAge}</p>`;
+}
+
+
+function createTopAgeGrade(target, meta) {
+  const fig = document.createElement('div');
+  fig.id = 'agegrade';
+  fig.classList.add('info');
+  target.append(fig);
+
+  // extract the highest age grade from the keys in meta.ageGrades
+  const ageGrades = Object.keys(meta.ageGrades);
+  const highestAgeGrade = Math.max(...ageGrades);
+
+  const gauge = chrome.runtime.getURL('src/i/gauge.svg');
+
+  fig.innerHTML = `<img alt="A gauge" src="${gauge}"><p>Top Age<br>Grade: ${highestAgeGrade}%</p>`;
+}
+
+
+function createTotalDistance(target, meta) {
+  const fig = document.createElement('div');
+  fig.id = 'distance';
+  fig.classList.add('info');
+  target.append(fig);
+
+  // calculate todays distance
+  const todaysDistance = meta.finishers.length * 5;
+
+  // add all the runs distances together  
+  let totalDistance = 0;
+  for (const finisher of meta.finishers) {
+    totalDistance += finisher.runs * 5;
+  }
+
+  const earthCircumference = 40075;
+  const earthLaps = Math.ceil(earthCircumference / todaysDistance);
+
+  const tape = chrome.runtime.getURL('src/i/earth.svg');
+
+  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today - enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
+}
+
+
+
+
+function createGenderDonut(target, meta) {
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const config = {
+    id: 'gender-donut',
+    message: `<h1>${participants}</h1><p>Participants</p>`,
+    raw: [
+      { label: 'Male', value: meta.genders.male, color: c1 },
+      { label: 'Female', value: meta.genders.female , color: c2 },
+      { label: 'Unknown', value: meta.genders.unknown , color: c5 },
+    ]
+  };
+  createDonut(target, config);
+}
+
+
+function createFirstDonut(target, meta) {
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const firsts = meta.first.here + meta.first.anywhere;
+  const config = {
+    id: 'first-donut',
+    message: `<h1>${firsts}</h1><p>First Timers</p><p>${Number(firsts / participants * 100).toFixed(1)}% of participants</p>`,
+    raw: [
+      { label: 'First parkrun ever!', value: meta.first.anywhere, color: c4 },
+      { label: 'First parkrun here', value: meta.first.here, color: c7 },
+      { label: 'Have parkrun here before', value: participants - firsts, color: c5 },
+    ]
+  };
+  createDonut(target, config);
+}
+
+function createPBDonut(target, meta) {
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown;
+  const config = {
+    id: 'donut-pb',
+    message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
+    raw: [
+      { label: 'Male PB', value: meta.pb.male, color: c1 },
+      { label: 'Female PB', value: meta.pb.female, color: c2 },
+      { label: 'No PB', value: participants - pbs, color: c5 },
+    ]
+  };
+  createDonut(target, config);
+}
+
+
+function createMilestonesDonut(target, meta) {
+  const config = {
+    id: 'dmilestones',
+    message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
+    raw: [
+      { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
+      { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
+      { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
+      { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
+      { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
+      { label: '1K', value: meta.milestones.official[1000].length, color: '#BBBBBB' },
+    ],
+    borderColor: '#fff'
+  };
+  createDonut(target, config);
+}
+
+function createDonut(target, config) {
+  const fig = document.createElement('figure');
+  fig.id = config.id;
+  fig.classList.add('donut');
+  const cap = document.createElement('figcaption');
+  cap.innerHTML = config.message;
+  fig.append(cap);
+  const canvas = document.createElement('canvas');
+  fig.append(canvas);
+  target.append(fig);
+
+  const key = document.createElement('div');
+  key.classList.add('key');
+  fig.append(key);
+
+  // Prepare the data for the chart
+  const data = {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [],
+    }],
+  };
+
+  
+  // add data from raw to the chart
+  for (const item of config.raw) {
+    if (item.value != 0) {
+      data.labels.push(item.label);
+      data.datasets[0].data.push(item.value);
+      data.datasets[0].backgroundColor.push(item.color);
+    }
+  }
+
+  addLegendToKey(key, data);
+
+  // Prepare the options for the chart
+  const options = {
+    color: '#fff',
+    borderColor: config.borderColor ?? 'transparent',
+    responsive: true,
+    maintainAspectRatio: true,
+    cutout: '60%',
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: 'white',
+        labels: {
+          value: {
+            font: {
+              size: '24px',
+              weight: 'bold',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  // Create a new Chart.js instance
+  new Chart(canvas, {
+    type: 'doughnut',
+    data,
+    options,
+  });
+}
+
+
 
 function extractFinishers() {
   const table = document.querySelector('table.Results-table');
@@ -57,12 +259,14 @@ function extractFinisherRow(row) {
 
 function createInfographicElement() {
   let infographic = document.querySelector('#infographic');
+  if (infographic) return;
+
   const header = document.querySelector('.Results-header');
-  if (header && !infographic) {
+  if (header) {
     infographic = document.createElement('div');
     infographic.id = 'infographic';
     infographic.innerHTML = '<code>Preparing Charts...</code>';
-    header.prepend(infographic);
+    header.before(infographic);
   }
   return infographic;
 }
@@ -105,7 +309,7 @@ function generateInfographic(meta) {
   createGenderDonut(infographic, meta);
   createPBDonut(infographic, meta);
   createMilestonesDonut(infographic, meta);
-  createFirst(infographic, meta);
+  createFirstDonut(infographic, meta);
   createAges(infographic, meta);
   createTopAgeGrade(infographic, meta);
   createVolunteers(infographic, meta);
@@ -133,6 +337,7 @@ function extractMeta(finishers) {
   meta.milestones = {};
   meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
   meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
+  meta.milestones.total = 0;
 
   const genderTerms = {
     female: ["Female", "Kvinna", "Kvinde", "Kobieta", "Femme", "Frau", "Weiblich", "Naiset", "Vrouw", "Nainen", "Donna", "女子", "Kobieta", "Kvinne"],
@@ -193,18 +398,21 @@ function extractMeta(finishers) {
     if (finisher.ageGrade) {
       meta.ageGrades[finisher.ageGrade] = (meta.ageGrades[finisher.ageGrade] ?? 0) + 1;
     }
-    if (finisher.age) {
+    if (finisher.age) {x
       meta.ages[finisher.age] = (meta.ages[finisher.age] ?? 0) + 1;
     }
     if (finisher.runs) {
       if (meta.milestones.official[finisher.runs]) {
         meta.milestones.official[finisher.runs].push(finisher.name);
+        meta.milestones.total++;
       }
       if (meta.milestones.unofficial[finisher.runs]) {
         meta.milestones.unofficial[finisher.runs].push(finisher.name);
+        meta.milestones.total++;
       }
     }
   }
+
   let totalVols = '0';
   for (const vol of Object.values(meta.vols)) {
     totalVols += vol;
@@ -270,4 +478,7 @@ function addLegendToKey(key, data) {
 }
 
 
+
 window.onload = delayedStart;
+
+

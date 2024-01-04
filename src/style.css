@@ -11,23 +11,6 @@
     --keysize: 5em;
 } 
 
-#infographic .key {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    gap: 0.25rem;
-    padding: 0.5rem;
-}
-
-#infographic .key div {
-    border-radius: 0.25em;
-}
-
-
 #infographic {
     display: grid;
     border-radius: 0.25em;
@@ -36,8 +19,8 @@
     min-width: 100%;
     grid-template-areas: "header header date"
                          "gender pb firsttime"
-                         "dmilestones ages distance"
                          "dmilestones agegrade distance"
+                         "dmilestones ages distance"
                          "dmilestones volunteers distance";
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto auto auto;
@@ -128,4 +111,33 @@
 #distance.info {
     flex-direction: column;
 }
- 
+
+#distance.info p {
+    text-align: center;
+}
+
+
+#infographic .key {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    gap: 0.25rem; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* background-color: #fff8; */
+    height: 4em;
+}
+
+#infographic .key div {
+    border-radius: 0.25em;
+    padding: 0.5em;
+    margin: 0.25rem;
+    display: flex;
+    align-items: center;
+}
