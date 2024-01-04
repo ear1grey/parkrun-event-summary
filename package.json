@@ -1,6 +1,6 @@
 {
   "name": "parkruneventsummary",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
   "main": "script.js",
   "type": "module",
