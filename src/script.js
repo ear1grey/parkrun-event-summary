@@ -136,12 +136,12 @@ function createMilestonesDonut(target, meta) {
     id: 'dmilestones',
     message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
     raw: [
-      { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
-      { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
-      { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
-      { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
-      { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
       { label: '1K', value: meta.milestones.official[1000].length, color: '#BBBBBB' },
+      { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
+      { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
+      { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
+      { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
+      { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
     ],
     borderColor: '#fff'
   };
@@ -187,15 +187,17 @@ function createDonut(target, config) {
   // Prepare the options for the chart
   const options = {
     color: '#fff',
-    borderColor: config.borderColor ?? 'transparent',
+    borderColor: config.borderColor ?? '#fff',
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     cutout: '60%',
     plugins: {
       legend: {
         display: false,
       },
       datalabels: {
+        textStrokeColor: 'black',
+        textStrokeWidth: 4,
         color: 'white',
         labels: {
           value: {

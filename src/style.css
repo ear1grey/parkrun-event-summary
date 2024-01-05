@@ -42,6 +42,7 @@
 
 #infographic h1{
     color: var(--apricot);
+    margin: 0;
 }
 
 #infographic > .event-date > h1 {
@@ -140,4 +141,5 @@
     margin: 0.25rem;
     display: flex;
     align-items: center;
+    border: solid thin white;
 }
