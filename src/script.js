@@ -319,19 +319,24 @@ function createDate(target) {
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
   infographic.innerHTML = '';
+  
   const ghead = createGroup(infographic, 'ghead'); 
   createTitle(ghead);
   createDate(ghead);
+
   const gcharts = createGroup(infographic, 'gcharts'); 
   createGenderDonut(gcharts, meta);
   createPBDonut(gcharts, meta);
-  createMilestonesDonut(gcharts, meta);
   createFirstDonut(gcharts, meta);
+  createMilestonesDonut(gcharts, meta);
+
   const g1 = createGroup(gcharts, 'g1');
-  createAges(g1, meta);
   createTopAgeGrade(g1, meta);
+  createAges(g1, meta);
   createVolunteers(g1, meta);
-  createTotalDistance(infographic, meta);
+
+  const g2 = createGroup(gcharts, 'g1');
+  createTotalDistance(g2, meta);
 }
 
 function simplify(text) {
@@ -426,7 +431,6 @@ function extractMeta(finishers) {
       }
       if (meta.milestones.unofficial[finisher.runs]) {
         meta.milestones.unofficial[finisher.runs].push(finisher.name);
-        meta.milestones.total++;
       }
     }
   }
