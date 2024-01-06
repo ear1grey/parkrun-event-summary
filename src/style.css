@@ -8,61 +8,82 @@
     --grey: #2A3436;
     --blue: #00ADEF;
     --blue2: #3E3E78;
-    --keysize: 5em;
+    --areas:
+        "header"
+        "date"
+        "gender"
+        "pb"
+        "firsttime"
+        "dmilestones"
+        "ages"
+        "agegrade"
+        "distance"
+        "volunteers";
+    --columns: 1fr;
+    --rows: auto;
+    --width: 340px;
 } 
 
+.group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: stretch;
+    width: var(--width);
+    height: auto;
+}
+
 #infographic {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
     border-radius: 0.25em;
     background: var(--blue2);
     color: white;
     min-width: 100%;
-    grid-template-areas: "header header date"
-                         "gender pb firsttime"
-                         "dmilestones agegrade distance"
-                         "dmilestones ages distance"
-                         "dmilestones volunteers distance";
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 1rem;
     padding: 1rem;
 }
-
-#infographic > .event-location { grid-area: header; }
-#infographic > .event-date { grid-area: date; }
-#donut-gender { grid-area: gender; }
-#donut-pb     { grid-area: pb; }
-#donut-first  { grid-area: firsttime; }
-#dmilestones  { grid-area: dmilestones; }
-#ages         { grid-area: ages; }
-#agegrade     { grid-area: agegrade; }
-#volunteers   { grid-area: volunteers; }
-#distance     { grid-area: distance; }
-
 
 #infographic h1{
     color: var(--apricot);
     margin: 0;
 }
 
-#infographic > .event-date > h1 {
-    text-align: right;
+#ghead {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
-#infographic > .event-location > h1 {
-   text-align: left;
+
+#gcharts {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
 }
+
 
 #main .donut {
     position: relative;
+}
+
+#main figure {
+    width: var(--width);
 }
 
 #main .donut figcaption {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: var(--width);
+    height: var(--width);
     color: #000;
     display: flex;
     flex-direction: column;
@@ -70,10 +91,6 @@
     justify-content: center;
     gap: 0;
     padding-bottom: var(--keysize);
-}
-
-#main .donut canvas {
-    margin-bottom: var(--keysize);
 }
 
 #main .donut figcaption * {
@@ -109,30 +126,12 @@
     margin-right: 1em;
 }
 
-#distance.info {
-    flex-direction: column;
-}
-
-#distance.info p {
-    text-align: center;
-}
-
-
 #infographic .key {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    /* display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    gap: 0.25rem; */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    /* background-color: #fff8; */
-    height: 4em;
+    margin: 0.5em auto 1em auto
 }
 
 #infographic .key div {
@@ -142,4 +141,18 @@
     display: flex;
     align-items: center;
     border: solid thin white;
+}
+
+#main #linkToChromeExtension {
+    text-align: center;
+    /* color: var(--blue2);
+    font-weight: bold; */
+    font-size: 90%;
+    margin: 0.2em;
+}
+
+#main #linkToChromeExtension a {
+    color: var(--blue2);
+    font-weight: bold;
+    text-decoration: underline;
 }

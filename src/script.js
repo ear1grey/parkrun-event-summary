@@ -17,6 +17,14 @@ function createVolunteers(target, meta) {
   fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Hi-Viz<br>Heroes</p>`;
 }
 
+function createGroup(target, id) {
+  const group = document.createElement('div');
+  group.id = id;
+  group.classList.add('group');
+  target.append(group);
+  return group;
+}
+
 
 function createAges(target, meta) {
   const fig = document.createElement('div');
@@ -79,7 +87,7 @@ function createTotalDistance(target, meta) {
 
   const tape = chrome.runtime.getURL('src/i/earth.svg');
 
-  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today - enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
+  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
 }
 
 
@@ -107,9 +115,9 @@ function createFirstDonut(target, meta) {
     id: 'first-donut',
     message: `<h1>${firsts}</h1><p>First Timers</p><p>${Number(firsts / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'First parkrun ever!', value: meta.first.anywhere, color: c4 },
-      { label: 'First parkrun here', value: meta.first.here, color: c7 },
-      { label: 'Have parkrun here before', value: participants - firsts, color: c5 },
+      { label: 'First ever!', value: meta.first.anywhere, color: c4 },
+      { label: 'First time here', value: meta.first.here, color: c7 },
+      { label: 'Participated here before', value: participants - firsts, color: c5 },
     ]
   };
   createDonut(target, config);
@@ -187,10 +195,10 @@ function createDonut(target, config) {
   // Prepare the options for the chart
   const options = {
     color: '#fff',
+    cutout: "65%",
     borderColor: config.borderColor ?? '#fff',
     responsive: true,
-    maintainAspectRatio: false,
-    cutout: '60%',
+    maintainAspectRatio: true,
     plugins: {
       legend: {
         display: false,
@@ -212,7 +220,7 @@ function createDonut(target, config) {
   };
 
   // Create a new Chart.js instance
-  new Chart(canvas, {
+  const chart = new Chart(canvas, {
     type: 'doughnut',
     data,
     options,
@@ -269,6 +277,11 @@ function createInfographicElement() {
     infographic.id = 'infographic';
     infographic.innerHTML = '<code>Preparing Charts...</code>';
     header.before(infographic);
+
+    let p = document.createElement('p');
+    p.id = 'linkToChromeExtension';
+    p.innerHTML = 'Infographic made with the <a href="https://chromewebstore.google.com/detail/parkrun-event-summary/nfdbgfodockojbhmenjohphggbokgmaf">parkrun Event Summary</a> Chrome extension.';
+    header.before(p);
   }
   return infographic;
 }
@@ -306,15 +319,18 @@ function createDate(target) {
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
   infographic.innerHTML = '';
-  createTitle(infographic);
-  createDate(infographic);
-  createGenderDonut(infographic, meta);
-  createPBDonut(infographic, meta);
-  createMilestonesDonut(infographic, meta);
-  createFirstDonut(infographic, meta);
-  createAges(infographic, meta);
-  createTopAgeGrade(infographic, meta);
-  createVolunteers(infographic, meta);
+  const ghead = createGroup(infographic, 'ghead'); 
+  createTitle(ghead);
+  createDate(ghead);
+  const gcharts = createGroup(infographic, 'gcharts'); 
+  createGenderDonut(gcharts, meta);
+  createPBDonut(gcharts, meta);
+  createMilestonesDonut(gcharts, meta);
+  createFirstDonut(gcharts, meta);
+  const g1 = createGroup(gcharts, 'g1');
+  createAges(g1, meta);
+  createTopAgeGrade(g1, meta);
+  createVolunteers(g1, meta);
   createTotalDistance(infographic, meta);
 }
 

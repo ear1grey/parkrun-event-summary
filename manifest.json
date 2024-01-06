@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "parkrun Event Summary",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
   "icons": {
     "16": "src/i/logo16.png",
