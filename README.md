@@ -8,17 +8,21 @@ e.g. If you want to see an infographic for the latest results from [Portsmouth L
 
 ## Why does it exist?
 
-I was inspired to create it when I saw a really cool infographic at my local parkrun, that was (I believe) based on a PowerPoint slide (that I think might have been) created by a Steve Tyler - there are many examples on the Rushmoor Parkrun results page.  The process of getting the data into Powerpoint is quite cumbersome, so I wanted to see if I could simplify it.
+I was inspired to create it when I saw a really cool infographic at my local parkrun, that was (I believe) based on a PowerPoint slide (that I think might have been) created by a Steve Tyler (for Rushmoor parkrun) that may in turn have been based on a design by Ian Gregory (an RD at Great Salterns) - there are many examples on the Rushmoor and Great Salterns Parkrun results pages.  The process of getting the data into Powerpoint is quite cumbersome, so I wanted to see if I could simplify it, thus a chrome extension that builds the whole image in-page automatically (with no hunting-down or typing-in of numbers).
 
 ## Will it explode?
 
 No.
 
-Please note that this _is_ currently **alpha release** software - i.e. it may not work perfectly, _yet_.
+Please note that this _is_ currently **beta release** software - i.e. it may not work perfectly, _yet_.  It was released in Jan 2024 and is actively being developeed.
 
 ## Can I help?
 
-Quite probably!  Fork the repo, add stuff, send me a pull request. 
+Quite probably!
+
+If you code, fork [the repo](https://github.com/ear1grey/parkrun-event-summary), add stuff, send me a pull request.
+
+If you have an idea, a feature request, or want to report a bug, please [write about it here](https://github.com/ear1grey/parkrun-event-summary/issues).
 
 ## Is this an official parkrun tool?
 
