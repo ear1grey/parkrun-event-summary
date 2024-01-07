@@ -8,7 +8,7 @@ e.g. If you want to see an infographic for the latest results from [Portsmouth L
 
 ## Why does it exist?
 
-I was inspired to create it when I saw a really cool infographic at my local parkrun, that was (I believe) based on a PowerPoint slide (that I think might have been) created by a Steve Tyler (for Rushmoor parkrun) that may in turn have been based on a design by Ian Gregory (an RD at Great Salterns) - there are many examples on the Rushmoor and Great Salterns Parkrun results pages.  The process of getting the data into Powerpoint is quite cumbersome, so I wanted to see if I could simplify it, thus a chrome extension that builds the whole image in-page automatically (with no hunting-down or typing-in of numbers).
+I was inspired to create it when I saw a really cool infographic at my local parkrun, that was generated using a PowerPoint slide (that I think might have been) created by Steve Tyler (for Rushmoor parkrun) that may in turn have been based on [a design](https://www.facebook.com/greatsalternsparkrun/photos/pb.100080505252730.-2207520000/181070371149452/?type=3) by Ian Gregory (an RD at Great Salterns) - there are many examples on the Rushmoor and Great Salterns Parkrun results pages.  The process of getting the data into Powerpoint is quite cumbersome, so I wanted to see if I could simplify it, thus a chrome extension that builds the whole image in-page automatically (with no hunting-down or typing-in of numbers).
 
 ## Will it explode?
 
