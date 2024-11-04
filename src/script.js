@@ -354,7 +354,6 @@ function extractMeta(finishers) {
   meta.vols = {};
   meta.ageGrades = {};
   meta.ages = {};
-  meta.firstTimer = { male: 0, female: 0, unknown: 0 };
   meta.first = { here: 0, anywhere: 0 };
   meta.pb = { male: 0, female: 0, unknown: 0 };
   meta.milestones = {};
@@ -394,7 +393,6 @@ function extractMeta(finishers) {
       // uk, at, de, nl, dk, fi, fr, jp, no, pl, se
 
       if (firstTimer.includes(finisher.achievement)) {
-        meta.firstTimer[finisher.gender] = meta.firstTimer[finisher.gender] + 1 ?? 1;
         if (finisher.runs === '1') {
           meta.first.anywhere++;
         } else {
