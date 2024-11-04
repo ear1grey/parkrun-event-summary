@@ -362,8 +362,8 @@ function extractMeta(finishers) {
   meta.milestones.total = 0;
 
   const genderTerms = {
-    female: ["Female", "Kvinna", "Kvinde", "Kobieta", "Femme", "Frau", "Weiblich", "Naiset", "Vrouw", "Nainen", "Donna", "女子", "Kobieta", "Kvinne"],
-    male: ["Male", "Man", "Mann", "Mand", "Männlich", "Homme", "Miehet", "Mężczyzna", "男子"]
+    female: ["Female", "Kvinna", "Kvinde", "Kobieta", "Femme", "Frau", "Weiblich", "Naiset", "Vrouw", "Nainen", "Donna", "女子", "Kobieta", "Kvinne", "Moteris"],
+    male: ["Male", "Man", "Mann", "Mand", "Männlich", "Homme", "Miehet", "Mężczyzna", "男子", "Vyras"]
   };
 
   for (const finisher of finishers) {
@@ -387,8 +387,8 @@ function extractMeta(finishers) {
     if (finisher.achievement) {
       meta.achievement[finisher.achievement] = (meta.achievement[finisher.achievement] ?? 0) + 1;
 
-      const firstTimer = ["First Timer!", "Første gang!", "Erstteilnahme!", "Première perf' !", "Erstläufer!", "Nieuwe loper!", "Ensikertalainen!", "Prima volta!", "初参加!", "Debiutant", "Debut!"];
-      const newPB = ["New PB!", "Neue PB!", "Meilleure perf' !", "Nieuw PR!", "Ny PB!", "Oma ennätys!", "Nuovo PB!", "自己ベスト!", "Nowy PB!", "Nytt PB!"];
+      const firstTimer = ["First Timer!", "Første gang!", "Erstteilnahme!", "Première perf' !", "Erstläufer!", "Nieuwe loper!", "Ensikertalainen!", "Prima volta!", "初参加!", "Debiutant", "Debut!", "Naujokas!"];
+      const newPB = ["New PB!", "Neue PB!", "Meilleure perf' !", "Nieuw PR!", "Ny PB!", "Oma ennätys!", "Nuovo PB!", "自己ベスト!", "Nowy PB!", "Nytt PB!", "Naujas geriausias asmeninis rezultatas!"];
 
       // uk, at, de, nl, dk, fi, fr, jp, no, pl, se
 
