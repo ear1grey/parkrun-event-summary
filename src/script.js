@@ -69,19 +69,12 @@ function createTopAgeGrade(target, meta) {
 
 function createTotalDistance(target, meta) {
   const fig = document.createElement('div');
+  const COURSE_DISTANCE = isForJuniors() ? 2 : 5;
   fig.id = 'distance';
   fig.classList.add('info');
   target.append(fig);
 
-  // calculate todays distance
-  const todaysDistance = meta.finishers.length * 5;
-
-  // add all the runs distances together  
-  let totalDistance = 0;
-  for (const finisher of meta.finishers) {
-    totalDistance += finisher.runs * 5;
-  }
-
+  const todaysDistance = meta.finishers.length * COURSE_DISTANCE;
   const earthCircumference = 40075;
   const earthLaps = Math.ceil(earthCircumference / todaysDistance);
 
