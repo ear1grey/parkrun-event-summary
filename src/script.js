@@ -80,10 +80,8 @@ function createTotalDistance(target, meta) {
 
   const tape = chrome.runtime.getURL('src/i/earth.svg');
 
-  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
+  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance.toLocaleString()}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
 }
-
-
 
 
 function createGenderDonut(target, meta) {
