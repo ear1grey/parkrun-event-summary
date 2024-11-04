@@ -143,15 +143,23 @@ function createMilestonesDonut(target, meta) {
   const config = {
     id: 'dmilestones',
     message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
-    raw: [
-      { label: '1K', value: meta.milestones.official[1000].length, color: '#BBBBBB' },
-      { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
-      { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
-      { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
-      { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
-      { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
-    ],
-    borderColor: '#fff'
+    raw: isForJuniors()
+      ? [
+          { label: '250', value: meta.milestones.official[250].length, color: '#ffff00' },
+          { label: '100', value: meta.milestones.official[100].length, color: '#7f7f7f' },
+          { label: 'ultra marathon', value: meta.milestones.official[50].length, color: '#ffa401' },
+          { label: 'marathon', value: meta.milestones.official[21].length, color: '#c1cf00' },
+          { label: 'half marathon', value: meta.milestones.official[11].length, color: '#98d6ec' },
+        ]
+      : [
+          { label: '1K', value: meta.milestones.official[1000].length, color: '#BBBBBB' },
+          { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
+          { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
+          { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
+          { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
+          { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
+        ],
+    borderColor: '#fff',
   };
   createDonut(target, config);
 }
@@ -358,7 +366,8 @@ function extractMeta(finishers) {
   meta.first = { here: 0, anywhere: 0 };
   meta.pb = { male: 0, female: 0, unknown: 0 };
   meta.milestones = {};
-  meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
+  meta.milestones.junior = { 11: [], 21: [], 50: [], 100: [], 250: [] };
+  meta.milestones.fiveK = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
   meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
   meta.milestones.total = 0;
 
@@ -421,10 +430,13 @@ function extractMeta(finishers) {
     if (finisher.ageGrade) {
       meta.ageGrades[finisher.ageGrade] = (meta.ageGrades[finisher.ageGrade] ?? 0) + 1;
     }
-    if (finisher.age) {x
+    if (finisher.age) {
       meta.ages[finisher.age] = (meta.ages[finisher.age] ?? 0) + 1;
     }
     if (finisher.runs) {
+      meta.milestones.official = isForJuniors()
+        ? meta.milestones.junior
+        : meta.milestones.fiveK;
       if (meta.milestones.official[finisher.runs]) {
         meta.milestones.official[finisher.runs].push(finisher.name);
         meta.milestones.total++;
@@ -499,8 +511,8 @@ function addLegendToKey(key, data) {
   });
 }
 
-
+function isForJuniors() {
+  return window.location.href.includes('-juniors/');
+}
 
 window.onload = delayedStart;
-
-
