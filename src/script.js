@@ -125,7 +125,7 @@ function createFirstDonut(target, meta) {
 }
 
 function createPBDonut(target, meta) {
-  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
   const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown + meta.pb.other;
   const config = {
     id: 'donut-pb',
