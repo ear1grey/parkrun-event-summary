@@ -100,6 +100,7 @@ function createGenderDonut(target, meta) {
     message: `<h1>${participants}</h1><p>Participants</p>`,
     raw: [
       { label: 'Male', value: meta.genders.male, color: c1 },
+      { label: 'Other', value: meta.genders.other , color: c3 },
       { label: 'Female', value: meta.genders.female , color: c2 },
       { label: 'Unknown', value: meta.genders.unknown , color: c5 },
     ]
@@ -131,6 +132,7 @@ function createPBDonut(target, meta) {
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
       { label: 'Male PB', value: meta.pb.male, color: c1 },
+      { label: 'Other PB', value: meta.pb.other, color: c3 },
       { label: 'Female PB', value: meta.pb.female, color: c2 },
       { label: 'No PB', value: participants - pbs, color: c5 },
     ]
@@ -345,7 +347,7 @@ function simplify(text) {
 
 function extractMeta(finishers) {
   const meta = {};
-  meta.genders = { male: 0, female: 0, unknown: 0 };
+  meta.genders = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.achievement = {};
   meta.clubs = {};
   meta.ageGroups = {};
@@ -354,9 +356,9 @@ function extractMeta(finishers) {
   meta.vols = {};
   meta.ageGrades = {};
   meta.ages = {};
-  meta.firstTimer = { male: 0, female: 0, unknown: 0 };
+  meta.firstTimer = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.first = { here: 0, anywhere: 0 };
-  meta.pb = { male: 0, female: 0, unknown: 0 };
+  meta.pb = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.milestones = {};
   meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
   meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
@@ -381,8 +383,15 @@ function extractMeta(finishers) {
         finisher.gender = "unknown";
       }
     } else {
-      meta.genders.unknown++;
-      finisher.gender = "unknown";
+      // if the length of the gender string is 0, we'll assume it's other
+      // otherwise we'll assume it's unknown
+      if (typeof finisher.gender === "string" && finisher.gender.length === 0) {
+        meta.genders.other++; 
+        finisher.gender = "other";
+      } else {
+        meta.genders.unknown++;
+        finisher.gender = "unknown";
+      }
     }
 
     if (finisher.achievement) {
