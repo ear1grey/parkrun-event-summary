@@ -94,7 +94,7 @@ function createTotalDistance(target, meta) {
 
 
 function createGenderDonut(target, meta) {
-  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
   const config = {
     id: 'gender-donut',
     message: `<h1>${participants}</h1><p>Participants</p>`,
@@ -110,7 +110,7 @@ function createGenderDonut(target, meta) {
 
 
 function createFirstDonut(target, meta) {
-  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
   const firsts = meta.first.here + meta.first.anywhere;
   const config = {
     id: 'first-donut',
@@ -126,7 +126,7 @@ function createFirstDonut(target, meta) {
 
 function createPBDonut(target, meta) {
   const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
-  const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown;
+  const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown + meta.pb.other;
   const config = {
     id: 'donut-pb',
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
@@ -370,7 +370,7 @@ function extractMeta(finishers) {
   };
 
   for (const finisher of finishers) {
-
+    console.log(finisher);
     if (finisher.gender) {
       if (genderTerms.male.includes(finisher.gender)) {
         meta.genders.male++;
