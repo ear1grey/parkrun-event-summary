@@ -1,12 +1,24 @@
-const c1 = '#3e95cd';
-const c2 = '#ffa300';
-const c3 = '#5ea28e';
-const c4 = '#8e5ea2';
-const c5 = '#999999';
-const c6 = '#00ceae';
-const c7 = '#6FC24D';
-const c8 = '#F41C22';
-const c9 = '#00ADEF';
+const maleColour = '#00ceae';
+const femaleColour = '#ffa300';
+const unknownColour = '#6FC24D';
+const noPBColour = '#95D03A';
+const firstEverColour = '#8e5ea2';
+const firstTimeHereColour = '#e21145';
+const beenBeforeColour = '#00ADEF';
+
+const milestoneTen ='#ffffffb6';
+const milestoneTwentyFive = '#523585';
+const milestoneFifty = '#C92E2E';
+const milestoneHundred = '#222222';
+const milestoneTwoFifty = '#394A36';
+const milestoneFiveHundred = '#0162BA';
+const milestoneThousand = '#E5C500';
+
+const juniorMilestoneHalfMarathon = '#99d6ea';
+const juniorMilestoneMarathon = '#c1cc26';
+const juniorMilestoneUltra = '#ffa300';
+const juniorMilestoneHundred = '#939393';
+const juniorMilestoneTwoFifty = '#ffdd00';
 
 function createVolunteers(target, meta) {
   const fig = document.createElement('div');
@@ -16,6 +28,7 @@ function createVolunteers(target, meta) {
   const viz = chrome.runtime.getURL('src/i/hiviz.svg');
   fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Hi-Viz<br>Heroes</p>`;
 }
+
 
 function createGroup(target, id) {
   const group = document.createElement('div');
@@ -69,28 +82,19 @@ function createTopAgeGrade(target, meta) {
 
 function createTotalDistance(target, meta) {
   const fig = document.createElement('div');
+  const COURSE_DISTANCE = isForJuniors() ? 2 : 5;
   fig.id = 'distance';
   fig.classList.add('info');
   target.append(fig);
 
-  // calculate todays distance
-  const todaysDistance = meta.finishers.length * 5;
-
-  // add all the runs distances together  
-  let totalDistance = 0;
-  for (const finisher of meta.finishers) {
-    totalDistance += finisher.runs * 5;
-  }
-
+  const todaysDistance = meta.finishers.length * COURSE_DISTANCE;
   const earthCircumference = 40075;
   const earthLaps = Math.ceil(earthCircumference / todaysDistance);
 
   const tape = chrome.runtime.getURL('src/i/earth.svg');
 
-  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
+  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance.toLocaleString()}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
 }
-
-
 
 
 function createGenderDonut(target, meta) {
@@ -99,10 +103,10 @@ function createGenderDonut(target, meta) {
     id: 'gender-donut',
     message: `<h1>${participants}</h1><p>Participants</p>`,
     raw: [
-      { label: 'Male', value: meta.genders.male, color: c1 },
-      { label: 'Female', value: meta.genders.female , color: c2 },
-      { label: 'Unknown', value: meta.genders.unknown , color: c5 },
-    ]
+      { label: 'Male', value: meta.genders.male, color: maleColour },
+      { label: 'Female', value: meta.genders.female , color: femaleColour },
+      { label: 'Unknown', value: meta.genders.unknown , color: unknownColour },
+    ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
 }
@@ -115,13 +119,14 @@ function createFirstDonut(target, meta) {
     id: 'first-donut',
     message: `<h1>${firsts}</h1><p>First Timers</p><p>${Number(firsts / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'First ever!', value: meta.first.anywhere, color: c4 },
-      { label: 'First time here', value: meta.first.here, color: c7 },
-      { label: 'Participated here before', value: participants - firsts, color: c5 },
-    ]
+      { label: 'First ever!', value: meta.first.anywhere, color: firstEverColour },
+      { label: 'First time here', value: meta.first.here, color: firstTimeHereColour },
+      { label: 'Participated here before', value: participants - firsts, color: beenBeforeColour },
+    ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
 }
+
 
 function createPBDonut(target, meta) {
   const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
@@ -130,10 +135,10 @@ function createPBDonut(target, meta) {
     id: 'donut-pb',
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'Male PB', value: meta.pb.male, color: c1 },
-      { label: 'Female PB', value: meta.pb.female, color: c2 },
-      { label: 'No PB', value: participants - pbs, color: c5 },
-    ]
+      { label: 'Male PB', value: meta.pb.male, color: maleColour },
+      { label: 'Female PB', value: meta.pb.female, color: femaleColour },
+      { label: 'No PB', value: participants - pbs, color: noPBColour },
+    ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
 }
@@ -143,18 +148,28 @@ function createMilestonesDonut(target, meta) {
   const config = {
     id: 'dmilestones',
     message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
-    raw: [
-      { label: '1K', value: meta.milestones.official[1000].length, color: '#BBBBBB' },
-      { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
-      { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
-      { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
-      { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
-      { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
-    ],
-    borderColor: '#fff'
+    raw: isForJuniors()
+      ? [
+          { label: 'Half marathon (11)', value: meta.milestones.official[11].length, color: juniorMilestoneHalfMarathon },
+          { label: 'Marathon (21)', value: meta.milestones.official[21].length, color: juniorMilestoneMarathon },
+          { label: 'Ultra marathon (50)', value: meta.milestones.official[50].length, color: juniorMilestoneUltra },
+          { label: '100', value: meta.milestones.official[100].length, color: juniorMilestoneHundred },
+          { label: '250', value: meta.milestones.official[250].length, color: juniorMilestoneTwoFifty },
+        ]
+      : [
+          { label: '10', value: meta.milestones.official[10].length, color: milestoneTen },
+          { label: '25', value: meta.milestones.official[25].length, color: milestoneTwentyFive },
+          { label: '50', value: meta.milestones.official[50].length, color: milestoneFifty },
+          { label: '100', value: meta.milestones.official[100].length, color: milestoneHundred },
+          { label: '250', value: meta.milestones.official[250].length, color: milestoneTwoFifty },
+          { label: '500', value: meta.milestones.official[500].length, color: milestoneFiveHundred },
+          { label: '1K', value: meta.milestones.official[1000].length, color: milestoneThousand },
+        ],
+    borderColor: '#fff',
   };
   createDonut(target, config);
 }
+
 
 function createDonut(target, config) {
   const fig = document.createElement('figure');
@@ -179,7 +194,6 @@ function createDonut(target, config) {
       backgroundColor: [],
     }],
   };
-
   
   // add data from raw to the chart
   for (const item of config.raw) {
@@ -228,7 +242,6 @@ function createDonut(target, config) {
 }
 
 
-
 function extractFinishers() {
   const table = document.querySelector('table.Results-table');
   const rows = table.querySelectorAll('.Results-table-row');
@@ -241,6 +254,7 @@ function extractFinishers() {
 
   return finishers;
 }
+
 
 function extractFinisherRow(row) {
   const result = {};
@@ -258,14 +272,9 @@ function extractFinisherRow(row) {
     result.achievement = row.dataset.achievement;
   }
 
-  // // Extract inner text from each table data cell
-  // const cells = row.querySelectorAll("td");
-  // cells.forEach((cell, index) => {
-  //   data[`cell${index + 1}`] = cell.innerText.trim();
-  // });
-
   return result;
 }
+
 
 function createInfographicElement() {
   let infographic = document.querySelector('#infographic');
@@ -283,6 +292,7 @@ function createInfographicElement() {
     p.innerHTML = 'Infographic made with the <a href="https://chromewebstore.google.com/detail/parkrun-event-summary/nfdbgfodockojbhmenjohphggbokgmaf">parkrun Event Summary</a> Chrome extension.';
     header.before(p);
   }
+
   return infographic;
 }
 
@@ -304,6 +314,7 @@ function createTitle(target) {
   target.append(header);
 }
 
+
 function createDate(target) {
   const header = document.createElement('div');
   header.classList.add('event-date');
@@ -315,6 +326,7 @@ function createDate(target) {
   header.append(h1);
   target.append(header);
 }
+
 
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
@@ -339,9 +351,11 @@ function generateInfographic(meta) {
   createTotalDistance(g2, meta);
 }
 
+
 function simplify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
+
 
 function extractMeta(finishers) {
   const meta = {};
@@ -358,7 +372,8 @@ function extractMeta(finishers) {
   meta.first = { here: 0, anywhere: 0 };
   meta.pb = { male: 0, female: 0, unknown: 0 };
   meta.milestones = {};
-  meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
+  meta.milestones.junior = { 11: [], 21: [], 50: [], 100: [], 250: [] };
+  meta.milestones.fiveK = { 10: [], 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
   meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
   meta.milestones.total = 0;
 
@@ -421,10 +436,13 @@ function extractMeta(finishers) {
     if (finisher.ageGrade) {
       meta.ageGrades[finisher.ageGrade] = (meta.ageGrades[finisher.ageGrade] ?? 0) + 1;
     }
-    if (finisher.age) {x
+    if (finisher.age) {
       meta.ages[finisher.age] = (meta.ages[finisher.age] ?? 0) + 1;
     }
     if (finisher.runs) {
+      meta.milestones.official = isForJuniors()
+        ? meta.milestones.junior
+        : meta.milestones.fiveK;
       if (meta.milestones.official[finisher.runs]) {
         meta.milestones.official[finisher.runs].push(finisher.name);
         meta.milestones.total++;
@@ -441,15 +459,19 @@ function extractMeta(finishers) {
   }
   meta.totalVols = totalVols;
   console.log(meta);
+
   return meta;
 }
+
 
 function extractVolunteers() {
   const volunteers = {};
   const volunteerDiv = document.querySelector('div.Results + div p');
   volunteers.count = volunteerDiv.querySelectorAll('a').length;
+
   return volunteers;
 }
+
 
 function start() {
   Chart.register(ChartDataLabels);
@@ -490,6 +512,7 @@ function delayedStart() {
   }
 }
 
+
 function addLegendToKey(key, data) {
   data.labels.forEach((label, index) => {
     const legendItem = document.createElement('div');
@@ -500,7 +523,9 @@ function addLegendToKey(key, data) {
 }
 
 
+function isForJuniors() {
+  return window.location.href.includes('-juniors/');
+}
+
 
 window.onload = delayedStart;
-
-
