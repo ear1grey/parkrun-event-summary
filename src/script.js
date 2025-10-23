@@ -157,7 +157,7 @@ function createMilestonesDonut(target, meta) {
           { label: '250', value: meta.milestones.official[250].length, color: juniorMilestoneTwoFifty },
         ]
       : [
-          { label: '10', value: meta.milestones.official[10].length, color: milestoneTen },
+          { label: '10 (under 18\'s)', value: meta.milestones.official[10].length, color: milestoneTen },
           { label: '25', value: meta.milestones.official[25].length, color: milestoneTwentyFive },
           { label: '50', value: meta.milestones.official[50].length, color: milestoneFifty },
           { label: '100', value: meta.milestones.official[100].length, color: milestoneHundred },
@@ -442,8 +442,13 @@ function extractMeta(finishers) {
         ? meta.milestones.junior
         : meta.milestones.fiveK;
       if (meta.milestones.official[finisher.runs]) {
-        meta.milestones.official[finisher.runs].push(finisher.name);
-        meta.milestones.total++;
+        // Only add milestone 10 if it's a junior (ageGroup starts with J)
+        if (finisher.runs === '10' && !finisher.ageGroup?.startsWith('J')) {
+          // Skip non-juniors for milestone 10
+        } else {
+          meta.milestones.official[finisher.runs].push(finisher.name);
+          meta.milestones.total++;
+        }
       }
       if (meta.milestones.unofficial[finisher.runs]) {
         meta.milestones.unofficial[finisher.runs].push(finisher.name);
