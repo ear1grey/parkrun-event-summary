@@ -28,8 +28,9 @@ function createVolunteers(target, meta) {
   fig.classList.add('info');
   target.append(fig);
   const viz = chrome.runtime.getURL('src/i/hiviz.svg');
-  fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Hi-Viz<br>Heroes</p>`;
+  fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Volunteers</p>`;
 }
+
 
 function createGroup(target, id) {
   const group = document.createElement('div');
@@ -83,28 +84,19 @@ function createTopAgeGrade(target, meta) {
 
 function createTotalDistance(target, meta) {
   const fig = document.createElement('div');
+  const COURSE_DISTANCE = isForJuniors() ? 2 : 5;
   fig.id = 'distance';
   fig.classList.add('info');
   target.append(fig);
 
-  // calculate todays distance
-  const todaysDistance = meta.finishers.length * 5;
-
-  // add all the runs distances together  
-  let totalDistance = 0;
-  for (const finisher of meta.finishers) {
-    totalDistance += finisher.runs * 5;
-  }
-
+  const todaysDistance = meta.finishers.length * COURSE_DISTANCE;
   const earthCircumference = 40075;
   const earthLaps = Math.ceil(earthCircumference / todaysDistance);
 
   const tape = chrome.runtime.getURL('src/i/earth.svg');
 
-  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
+  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance.toLocaleString()}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
 }
-
-
 
 
 function createGenderDonut(target, meta) {
@@ -117,7 +109,7 @@ function createGenderDonut(target, meta) {
       { label: 'Other', value: meta.genders.other, color: genderColours.other },
       { label: 'Female', value: meta.genders.female, color: genderColours.female },
       { label: 'Unknown', value: meta.genders.unknown, color: genderColours.unknown },
-    ]
+    ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
 }
@@ -133,10 +125,11 @@ function createFirstDonut(target, meta) {
       { label: 'First ever!', value: meta.first.anywhere, color: firstTimerColours.firstAnywhere },
       { label: 'First time here', value: meta.first.here, color: firstTimerColours.firstHere },
       { label: 'Participated here before', value: participants - firsts, color: firstTimerColours.before },
-    ]
+    ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
 }
+
 
 function createPBDonut(target, meta) {
   const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
@@ -149,7 +142,7 @@ function createPBDonut(target, meta) {
       { label: 'Other PB', value: meta.pb.other, color: genderColours.other },
       { label: 'Female PB', value: meta.pb.female, color: genderColours.female },
       { label: 'No PB', value: participants - pbs, color: genderColours.unknown },
-    ]
+    ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
 }
@@ -171,6 +164,7 @@ function createMilestonesDonut(target, meta) {
   };
   createDonut(target, config);
 }
+
 
 function createDonut(target, config) {
   const fig = document.createElement('figure');
@@ -195,7 +189,6 @@ function createDonut(target, config) {
       backgroundColor: [],
     }],
   };
-
   
   // add data from raw to the chart
   for (const item of config.raw) {
@@ -244,7 +237,6 @@ function createDonut(target, config) {
 }
 
 
-
 function extractFinishers() {
   const table = document.querySelector('table.Results-table');
   const rows = table.querySelectorAll('.Results-table-row');
@@ -257,6 +249,7 @@ function extractFinishers() {
 
   return finishers;
 }
+
 
 function extractFinisherRow(row) {
   const result = {};
@@ -274,14 +267,9 @@ function extractFinisherRow(row) {
     result.achievement = row.dataset.achievement;
   }
 
-  // // Extract inner text from each table data cell
-  // const cells = row.querySelectorAll("td");
-  // cells.forEach((cell, index) => {
-  //   data[`cell${index + 1}`] = cell.innerText.trim();
-  // });
-
   return result;
 }
+
 
 function createInfographicElement() {
   let infographic = document.querySelector('#infographic');
@@ -299,6 +287,7 @@ function createInfographicElement() {
     p.innerHTML = 'Infographic made with the <a href="https://chromewebstore.google.com/detail/parkrun-event-summary/nfdbgfodockojbhmenjohphggbokgmaf">parkrun Event Summary</a> Chrome extension.';
     header.before(p);
   }
+
   return infographic;
 }
 
@@ -320,6 +309,7 @@ function createTitle(target) {
   target.append(header);
 }
 
+
 function createDate(target) {
   const header = document.createElement('div');
   header.classList.add('event-date');
@@ -331,6 +321,7 @@ function createDate(target) {
   header.append(h1);
   target.append(header);
 }
+
 
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
@@ -355,9 +346,11 @@ function generateInfographic(meta) {
   createTotalDistance(g2, meta);
 }
 
+
 function simplify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
+
 
 function extractMeta(finishers) {
   const meta = {};
@@ -374,13 +367,14 @@ function extractMeta(finishers) {
   meta.first = { here: 0, anywhere: 0 };
   meta.pb = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.milestones = {};
-  meta.milestones.official = { 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
+  meta.milestones.junior = { 11: [], 21: [], 50: [], 100: [], 250: [] };
+  meta.milestones.fiveK = { 10: [], 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
   meta.milestones.unofficial = { 150: [], 200: [], 300: [], 400: [], 600: [], 700: [], 800: [], 900: [] };
   meta.milestones.total = 0;
 
   const genderTerms = {
-    female: ["Female", "Kvinna", "Kvinde", "Kobieta", "Femme", "Frau", "Weiblich", "Naiset", "Vrouw", "Nainen", "Donna", "女子", "Kobieta", "Kvinne"],
-    male: ["Male", "Man", "Mann", "Mand", "Männlich", "Homme", "Miehet", "Mężczyzna", "男子"]
+    female: ["Female", "Kvinna", "Kvinde", "Kobieta", "Femme", "Frau", "Weiblich", "Naiset", "Vrouw", "Nainen", "Donna", "女子", "Kobieta", "Kvinne", "Moteris"],
+    male: ["Male", "Man", "Mann", "Mand", "Männlich", "Homme", "Miehet", "Mężczyzna", "男子", "Vyras"]
   };
 
   for (const finisher of finishers) {
@@ -411,13 +405,12 @@ function extractMeta(finishers) {
     if (finisher.achievement) {
       meta.achievement[finisher.achievement] = (meta.achievement[finisher.achievement] ?? 0) + 1;
 
-      const firstTimer = ["First Timer!", "Første gang!", "Première perf' !", "Erstläufer!", "Nieuwe loper!", "Ensikertalainen!", "Prima volta!", "初参加!", "Debiutant", "Debut!"];
-      const newPB = ["New PB!", "Neue PB!", "Meilleure perf' !", "Nieuw PR!", "Ny PB!", "Oma ennätys!", "Nuovo PB!", "自己ベスト!", "Nowy PB!", "Nytt PB!"];
+      const firstTimer = ["First Timer!", "Første gang!", "Erstteilnahme!", "Première perf' !", "Erstläufer!", "Nieuwe loper!", "Ensikertalainen!", "Prima volta!", "初参加!", "Debiutant", "Debut!", "Naujokas!"];
+      const newPB = ["New PB!", "Neue PB!", "Meilleure perf' !", "Nieuw PR!", "Ny PB!", "Oma ennätys!", "Nuovo PB!", "自己ベスト!", "Nowy PB!", "Nytt PB!", "Naujas geriausias asmeninis rezultatas!"];
 
       // uk, at, de, nl, dk, fi, fr, jp, no, pl, se
 
       if (firstTimer.includes(finisher.achievement)) {
-        meta.firstTimer[finisher.gender] = meta.firstTimer[finisher.gender] + 1 ?? 1;
         if (finisher.runs === '1') {
           meta.first.anywhere++;
         } else {
@@ -444,13 +437,21 @@ function extractMeta(finishers) {
     if (finisher.ageGrade) {
       meta.ageGrades[finisher.ageGrade] = (meta.ageGrades[finisher.ageGrade] ?? 0) + 1;
     }
-    if (finisher.age) {x
+    if (finisher.age) {
       meta.ages[finisher.age] = (meta.ages[finisher.age] ?? 0) + 1;
     }
     if (finisher.runs) {
+      meta.milestones.official = isForJuniors()
+        ? meta.milestones.junior
+        : meta.milestones.fiveK;
       if (meta.milestones.official[finisher.runs]) {
-        meta.milestones.official[finisher.runs].push(finisher.name);
-        meta.milestones.total++;
+        // Only add milestone 10 if it's a junior (ageGroup starts with J)
+        if (finisher.runs === '10' && !finisher.ageGroup?.startsWith('J')) {
+          // Skip non-juniors for milestone 10
+        } else {
+          meta.milestones.official[finisher.runs].push(finisher.name);
+          meta.milestones.total++;
+        }
       }
       if (meta.milestones.unofficial[finisher.runs]) {
         meta.milestones.unofficial[finisher.runs].push(finisher.name);
@@ -464,15 +465,19 @@ function extractMeta(finishers) {
   }
   meta.totalVols = totalVols;
   console.log(meta);
+
   return meta;
 }
+
 
 function extractVolunteers() {
   const volunteers = {};
   const volunteerDiv = document.querySelector('div.Results + div p');
   volunteers.count = volunteerDiv.querySelectorAll('a').length;
+
   return volunteers;
 }
+
 
 function start() {
   Chart.register(ChartDataLabels);
@@ -513,6 +518,7 @@ function delayedStart() {
   }
 }
 
+
 function addLegendToKey(key, data) {
   data.labels.forEach((label, index) => {
     const legendItem = document.createElement('div');
@@ -523,7 +529,9 @@ function addLegendToKey(key, data) {
 }
 
 
+function isForJuniors() {
+  return window.location.href.includes('-juniors/');
+}
+
 
 window.onload = delayedStart;
-
-
