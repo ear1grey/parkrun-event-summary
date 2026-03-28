@@ -8,12 +8,19 @@ const genderColours = {
 };
 
 const milestoneColours = {
+  c10: '#0E7C7B',         // 10 (under 18's)
   c25: '#4D3691',
   c50: '#FF0200',
   c100: '#222222',
   c250: '#1EA073',
   c500: '#274EC8',
   c1000: '#BBBBBB',
+  // Juniors
+  juniorHalf: '#F9C846',     // Half marathon (11)
+  juniorMarathon: '#F97B22', // Marathon (21)
+  juniorUltra: '#A020F0',    // Ultra marathon (50)
+  junior100: '#222222',      // 100
+  junior250: '#1EA073',      // 250
 };
 
 const firstTimerColours = {
@@ -152,15 +159,24 @@ function createMilestonesDonut(target, meta) {
   const config = {
     id: 'dmilestones',
     message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
-    raw: [
-      { label: '1K', value: meta.milestones.official[1000].length, color: milestoneColours.c1000 },
-      { label: '500', value: meta.milestones.official[500].length, color: milestoneColours.c500 },
-      { label: '250', value: meta.milestones.official[250].length, color: milestoneColours.c250 },
-      { label: '100', value: meta.milestones.official[100].length, color: milestoneColours.c100 },
-      { label: '50', value: meta.milestones.official[50].length, color: milestoneColours.c50 },
-      { label: '25 parkruns', value: meta.milestones.official[25].length, color: milestoneColours.c25 },
-    ],
-    borderColor: '#fff'
+    raw: isForJuniors()
+      ? [
+          { label: 'Half marathon (11)', value: meta.milestones.official[11]?.length || 0, color: milestoneColours.juniorHalf },
+          { label: 'Marathon (21)', value: meta.milestones.official[21]?.length || 0, color: milestoneColours.juniorMarathon },
+          { label: 'Ultra marathon (50)', value: meta.milestones.official[50]?.length || 0, color: milestoneColours.juniorUltra },
+          { label: '100', value: meta.milestones.official[100]?.length || 0, color: milestoneColours.junior100 },
+          { label: '250', value: meta.milestones.official[250]?.length || 0, color: milestoneColours.junior250 },
+        ]
+      : [
+          { label: "10 (under 18's)", value: meta.milestones.official[10]?.length || 0, color: milestoneColours.c10 },
+          { label: '25', value: meta.milestones.official[25]?.length || 0, color: milestoneColours.c25 },
+          { label: '50', value: meta.milestones.official[50]?.length || 0, color: milestoneColours.c50 },
+          { label: '100', value: meta.milestones.official[100]?.length || 0, color: milestoneColours.c100 },
+          { label: '250', value: meta.milestones.official[250]?.length || 0, color: milestoneColours.c250 },
+          { label: '500', value: meta.milestones.official[500]?.length || 0, color: milestoneColours.c500 },
+          { label: '1K', value: meta.milestones.official[1000]?.length || 0, color: milestoneColours.c1000 },
+        ],
+    borderColor: '#fff',
   };
   createDonut(target, config);
 }
