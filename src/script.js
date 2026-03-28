@@ -1,24 +1,33 @@
-const maleColour = '#00ceae';
-const femaleColour = '#ffa300';
-const unknownColour = '#6FC24D';
-const noPBColour = '#95D03A';
-const firstEverColour = '#8e5ea2';
-const firstTimeHereColour = '#e21145';
-const beenBeforeColour = '#00ADEF';
 
-const milestoneTen ='#ffffffb6';
-const milestoneTwentyFive = '#523585';
-const milestoneFifty = '#C92E2E';
-const milestoneHundred = '#222222';
-const milestoneTwoFifty = '#394A36';
-const milestoneFiveHundred = '#0162BA';
-const milestoneThousand = '#E5C500';
+// Named colour palette
+const genderColours = {
+  male: '#3e95cd',      // blue
+  female: '#ffa300',    // apricot
+  other: '#5ea28e',     // teal/green
+  unknown: '#999999',   // grey
+};
 
-const juniorMilestoneHalfMarathon = '#99d6ea';
-const juniorMilestoneMarathon = '#c1cc26';
-const juniorMilestoneUltra = '#ffa300';
-const juniorMilestoneHundred = '#939393';
-const juniorMilestoneTwoFifty = '#ffdd00';
+const milestoneColours = {
+  c10: '#0E7C7B',         // 10 (under 18's)
+  c25: '#4D3691',
+  c50: '#FF0200',
+  c100: '#222222',
+  c250: '#1EA073',
+  c500: '#274EC8',
+  c1000: '#BBBBBB',
+  // Juniors
+  juniorHalf: '#F9C846',     // Half marathon (11)
+  juniorMarathon: '#F97B22', // Marathon (21)
+  juniorUltra: '#A020F0',    // Ultra marathon (50)
+  junior100: '#222222',      // 100
+  junior250: '#1EA073',      // 250
+};
+
+const firstTimerColours = {
+  firstAnywhere: '#8e5ea2', // purple
+  firstHere: '#6FC24D',     // green
+  before: '#999999',        // grey
+};
 
 function createVolunteers(target, meta) {
   const fig = document.createElement('div');
@@ -98,14 +107,15 @@ function createTotalDistance(target, meta) {
 
 
 function createGenderDonut(target, meta) {
-  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
   const config = {
     id: 'gender-donut',
     message: `<h1>${participants}</h1><p>Participants</p>`,
     raw: [
-      { label: 'Male', value: meta.genders.male, color: maleColour },
-      { label: 'Female', value: meta.genders.female , color: femaleColour },
-      { label: 'Unknown', value: meta.genders.unknown , color: unknownColour },
+      { label: 'Male', value: meta.genders.male, color: genderColours.male },
+      { label: 'Other', value: meta.genders.other, color: genderColours.other },
+      { label: 'Female', value: meta.genders.female, color: genderColours.female },
+      { label: 'Unknown', value: meta.genders.unknown, color: genderColours.unknown },
     ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
@@ -113,15 +123,15 @@ function createGenderDonut(target, meta) {
 
 
 function createFirstDonut(target, meta) {
-  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
   const firsts = meta.first.here + meta.first.anywhere;
   const config = {
     id: 'first-donut',
     message: `<h1>${firsts}</h1><p>First Timers</p><p>${Number(firsts / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'First ever!', value: meta.first.anywhere, color: firstEverColour },
-      { label: 'First time here', value: meta.first.here, color: firstTimeHereColour },
-      { label: 'Participated here before', value: participants - firsts, color: beenBeforeColour },
+      { label: 'First ever!', value: meta.first.anywhere, color: firstTimerColours.firstAnywhere },
+      { label: 'First time here', value: meta.first.here, color: firstTimerColours.firstHere },
+      { label: 'Participated here before', value: participants - firsts, color: firstTimerColours.before },
     ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
@@ -129,15 +139,16 @@ function createFirstDonut(target, meta) {
 
 
 function createPBDonut(target, meta) {
-  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown;
-  const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown;
+  const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
+  const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown + meta.pb.other;
   const config = {
     id: 'donut-pb',
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'Male PB', value: meta.pb.male, color: maleColour },
-      { label: 'Female PB', value: meta.pb.female, color: femaleColour },
-      { label: 'No PB', value: participants - pbs, color: noPBColour },
+      { label: 'Male PB', value: meta.pb.male, color: genderColours.male },
+      { label: 'Other PB', value: meta.pb.other, color: genderColours.other },
+      { label: 'Female PB', value: meta.pb.female, color: genderColours.female },
+      { label: 'No PB', value: participants - pbs, color: genderColours.unknown },
     ].sort((a, b) => b.value - a.value)  // Sort descending by value
   };
   createDonut(target, config);
@@ -150,20 +161,20 @@ function createMilestonesDonut(target, meta) {
     message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
     raw: isForJuniors()
       ? [
-          { label: 'Half marathon (11)', value: meta.milestones.official[11].length, color: juniorMilestoneHalfMarathon },
-          { label: 'Marathon (21)', value: meta.milestones.official[21].length, color: juniorMilestoneMarathon },
-          { label: 'Ultra marathon (50)', value: meta.milestones.official[50].length, color: juniorMilestoneUltra },
-          { label: '100', value: meta.milestones.official[100].length, color: juniorMilestoneHundred },
-          { label: '250', value: meta.milestones.official[250].length, color: juniorMilestoneTwoFifty },
+          { label: 'Half marathon (11)', value: meta.milestones.official[11]?.length || 0, color: milestoneColours.juniorHalf },
+          { label: 'Marathon (21)', value: meta.milestones.official[21]?.length || 0, color: milestoneColours.juniorMarathon },
+          { label: 'Ultra marathon (50)', value: meta.milestones.official[50]?.length || 0, color: milestoneColours.juniorUltra },
+          { label: '100', value: meta.milestones.official[100]?.length || 0, color: milestoneColours.junior100 },
+          { label: '250', value: meta.milestones.official[250]?.length || 0, color: milestoneColours.junior250 },
         ]
       : [
-          { label: '10 (under 18\'s)', value: meta.milestones.official[10].length, color: milestoneTen },
-          { label: '25', value: meta.milestones.official[25].length, color: milestoneTwentyFive },
-          { label: '50', value: meta.milestones.official[50].length, color: milestoneFifty },
-          { label: '100', value: meta.milestones.official[100].length, color: milestoneHundred },
-          { label: '250', value: meta.milestones.official[250].length, color: milestoneTwoFifty },
-          { label: '500', value: meta.milestones.official[500].length, color: milestoneFiveHundred },
-          { label: '1K', value: meta.milestones.official[1000].length, color: milestoneThousand },
+          { label: "10 (under 18's)", value: meta.milestones.official[10]?.length || 0, color: milestoneColours.c10 },
+          { label: '25', value: meta.milestones.official[25]?.length || 0, color: milestoneColours.c25 },
+          { label: '50', value: meta.milestones.official[50]?.length || 0, color: milestoneColours.c50 },
+          { label: '100', value: meta.milestones.official[100]?.length || 0, color: milestoneColours.c100 },
+          { label: '250', value: meta.milestones.official[250]?.length || 0, color: milestoneColours.c250 },
+          { label: '500', value: meta.milestones.official[500]?.length || 0, color: milestoneColours.c500 },
+          { label: '1K', value: meta.milestones.official[1000]?.length || 0, color: milestoneColours.c1000 },
         ],
     borderColor: '#fff',
   };
@@ -359,7 +370,7 @@ function simplify(text) {
 
 function extractMeta(finishers) {
   const meta = {};
-  meta.genders = { male: 0, female: 0, unknown: 0 };
+  meta.genders = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.achievement = {};
   meta.clubs = {};
   meta.ageGroups = {};
@@ -368,8 +379,9 @@ function extractMeta(finishers) {
   meta.vols = {};
   meta.ageGrades = {};
   meta.ages = {};
+  meta.firstTimer = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.first = { here: 0, anywhere: 0 };
-  meta.pb = { male: 0, female: 0, unknown: 0 };
+  meta.pb = { male: 0, female: 0, unknown: 0, other: 0 };
   meta.milestones = {};
   meta.milestones.junior = { 11: [], 21: [], 50: [], 100: [], 250: [] };
   meta.milestones.fiveK = { 10: [], 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [] };
@@ -382,7 +394,7 @@ function extractMeta(finishers) {
   };
 
   for (const finisher of finishers) {
-
+    console.log(finisher);
     if (finisher.gender) {
       if (genderTerms.male.includes(finisher.gender)) {
         meta.genders.male++;
@@ -395,8 +407,15 @@ function extractMeta(finishers) {
         finisher.gender = "unknown";
       }
     } else {
-      meta.genders.unknown++;
-      finisher.gender = "unknown";
+      // if the length of the gender string is 0, we'll assume it's other
+      // otherwise we'll assume it's unknown
+      if (typeof finisher.gender === "string" && finisher.gender.length === 0) {
+        meta.genders.other++; 
+        finisher.gender = "other";
+      } else {
+        meta.genders.unknown++;
+        finisher.gender = "unknown";
+      }
     }
 
     if (finisher.achievement) {
