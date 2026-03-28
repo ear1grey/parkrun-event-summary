@@ -1,12 +1,26 @@
-const c1 = '#3e95cd';
-const c2 = '#ffa300';
-const c3 = '#5ea28e';
-const c4 = '#8e5ea2';
-const c5 = '#999999';
-const c6 = '#00ceae';
-const c7 = '#6FC24D';
-const c8 = '#F41C22';
-const c9 = '#00ADEF';
+
+// Named colour palette
+const genderColours = {
+  male: '#3e95cd',      // blue
+  female: '#ffa300',    // apricot
+  other: '#5ea28e',     // teal/green
+  unknown: '#999999',   // grey
+};
+
+const milestoneColours = {
+  c25: '#4D3691',
+  c50: '#FF0200',
+  c100: '#222222',
+  c250: '#1EA073',
+  c500: '#274EC8',
+  c1000: '#BBBBBB',
+};
+
+const firstTimerColours = {
+  firstAnywhere: '#8e5ea2', // purple
+  firstHere: '#6FC24D',     // green
+  before: '#999999',        // grey
+};
 
 function createVolunteers(target, meta) {
   const fig = document.createElement('div');
@@ -99,10 +113,10 @@ function createGenderDonut(target, meta) {
     id: 'gender-donut',
     message: `<h1>${participants}</h1><p>Participants</p>`,
     raw: [
-      { label: 'Male', value: meta.genders.male, color: c1 },
-      { label: 'Other', value: meta.genders.other , color: c3 },
-      { label: 'Female', value: meta.genders.female , color: c2 },
-      { label: 'Unknown', value: meta.genders.unknown , color: c5 },
+      { label: 'Male', value: meta.genders.male, color: genderColours.male },
+      { label: 'Other', value: meta.genders.other, color: genderColours.other },
+      { label: 'Female', value: meta.genders.female, color: genderColours.female },
+      { label: 'Unknown', value: meta.genders.unknown, color: genderColours.unknown },
     ]
   };
   createDonut(target, config);
@@ -116,9 +130,9 @@ function createFirstDonut(target, meta) {
     id: 'first-donut',
     message: `<h1>${firsts}</h1><p>First Timers</p><p>${Number(firsts / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'First ever!', value: meta.first.anywhere, color: c4 },
-      { label: 'First time here', value: meta.first.here, color: c7 },
-      { label: 'Participated here before', value: participants - firsts, color: c5 },
+      { label: 'First ever!', value: meta.first.anywhere, color: firstTimerColours.firstAnywhere },
+      { label: 'First time here', value: meta.first.here, color: firstTimerColours.firstHere },
+      { label: 'Participated here before', value: participants - firsts, color: firstTimerColours.before },
     ]
   };
   createDonut(target, config);
@@ -131,10 +145,10 @@ function createPBDonut(target, meta) {
     id: 'donut-pb',
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'Male PB', value: meta.pb.male, color: c1 },
-      { label: 'Other PB', value: meta.pb.other, color: c3 },
-      { label: 'Female PB', value: meta.pb.female, color: c2 },
-      { label: 'No PB', value: participants - pbs, color: c5 },
+      { label: 'Male PB', value: meta.pb.male, color: genderColours.male },
+      { label: 'Other PB', value: meta.pb.other, color: genderColours.other },
+      { label: 'Female PB', value: meta.pb.female, color: genderColours.female },
+      { label: 'No PB', value: participants - pbs, color: genderColours.unknown },
     ]
   };
   createDonut(target, config);
@@ -146,12 +160,12 @@ function createMilestonesDonut(target, meta) {
     id: 'dmilestones',
     message: `<h1>${meta.milestones.total}</h1><p style="text-align: center">Participant<br>milestones<br>achieved!</p>`,
     raw: [
-      { label: '1K', value: meta.milestones.official[1000].length, color: '#BBBBBB' },
-      { label: '500', value: meta.milestones.official[500].length, color: '#274EC8' },
-      { label: '250', value: meta.milestones.official[250].length, color: '#1EA073' },
-      { label: '100', value: meta.milestones.official[100].length, color: '#222222' },
-      { label: '50', value: meta.milestones.official[50].length, color: '#FF0200' },
-      { label: '25 parkruns', value: meta.milestones.official[25].length, color: '#4D3691' },
+      { label: '1K', value: meta.milestones.official[1000].length, color: milestoneColours.c1000 },
+      { label: '500', value: meta.milestones.official[500].length, color: milestoneColours.c500 },
+      { label: '250', value: meta.milestones.official[250].length, color: milestoneColours.c250 },
+      { label: '100', value: meta.milestones.official[100].length, color: milestoneColours.c100 },
+      { label: '50', value: meta.milestones.official[50].length, color: milestoneColours.c50 },
+      { label: '25 parkruns', value: meta.milestones.official[25].length, color: milestoneColours.c25 },
     ],
     borderColor: '#fff'
   };
