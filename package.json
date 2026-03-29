@@ -7,6 +7,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "format": "prettier --write \"**/*.{js,css,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,css,json,md}\"",
     "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json src i;cp pes.zip pes.xpi;"
   },
   "author": "Rich Boakes <rich@boakes.org>",
@@ -15,6 +17,7 @@
     "eslint": "^8.54.0",
     "eslint-config-portsoc": "^1.0.1",
     "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
     "vitest": "^3.0.5"
   },
   "eslintConfig": {
@@ -23,5 +26,9 @@
     "env": {
       "browser": true
     }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }
