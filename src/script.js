@@ -1,4 +1,3 @@
-
 // Named colour palette
 const genderColours = {
   male: '#3e95cd',
@@ -132,7 +131,8 @@ function createFirstDonut(target, meta) {
     raw: [
       { label: 'First ever!', value: meta.first.anywhere, color: firstTimerColours.firstAnywhere },
       { label: 'First time here', value: meta.first.here, color: firstTimerColours.firstHere },
-      { label: 'Participated here before', value: participants - firsts, color: firstTimerColours.before },
+      // Hide 'Participated here before' from the key and chart
+      // { label: 'Participated here before', value: participants - firsts, color: firstTimerColours.before },
     ].sort((a, b) => b.value - a.value), // Sort descending by value
   };
   createDonut(target, config);
@@ -142,14 +142,26 @@ function createFirstDonut(target, meta) {
 function createPBDonut(target, meta) {
   const participants = meta.genders.male + meta.genders.female + meta.genders.unknown + meta.genders.other;
   const pbs = meta.pb.male + meta.pb.female + meta.pb.unknown + meta.pb.other;
+  // Use the same PB/noPB colors as the histogram
+  const pbShades = {
+    male: '#3e95cd', // base
+    malePB: '#6fb8e6',
+    female: '#ffa300',
+    femalePB: '#ffd580',
+    other: '#5ea28e',
+    otherPB: '#8edbb3',
+    unknown: '#999999',
+    unknownPB: '#cccccc',
+  };
+
   const config = {
     id: 'donut-pb',
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'Male PB', value: meta.pb.male, color: genderColours.male },
-      { label: 'Other PB', value: meta.pb.other, color: genderColours.other },
-      { label: 'Female PB', value: meta.pb.female, color: genderColours.female },
-      { label: 'No PB', value: participants - pbs, color: genderColours.unknown },
+      { label: 'Male PB', value: meta.pb.male, color: pbShades.malePB },
+      { label: 'Other PB', value: meta.pb.other, color: pbShades.otherPB },
+      { label: 'Female PB', value: meta.pb.female, color: pbShades.femalePB },
+      { label: 'No PB', value: participants - pbs, color: pbShades.unknown },
     ].sort((a, b) => b.value - a.value), // Sort descending by value
   };
   createDonut(target, config);
@@ -184,6 +196,18 @@ function createMilestonesDonut(target, meta) {
 
 
 function createDonut(target, config) {
+  // Create a wrapper to hold both key and donut, for centering
+  const donutWrap = document.createElement('div');
+  donutWrap.classList.add('donut-wrap');
+  donutWrap.style.display = 'flex';
+  donutWrap.style.flexDirection = 'column';
+  donutWrap.style.alignItems = 'center';
+  donutWrap.style.justifyContent = 'center';
+
+  const key = document.createElement('div');
+  key.classList.add('key');
+  donutWrap.append(key);
+
   const fig = document.createElement('figure');
   fig.id = config.id;
   fig.classList.add('donut');
@@ -192,11 +216,8 @@ function createDonut(target, config) {
   fig.append(cap);
   const canvas = document.createElement('canvas');
   fig.append(canvas);
-  target.append(fig);
-
-  const key = document.createElement('div');
-  key.classList.add('key');
-  fig.append(key);
+  donutWrap.append(fig);
+  target.append(donutWrap);
 
   // Prepare the data for the chart
   const data = {
@@ -342,41 +363,391 @@ function createDate(target) {
 
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
-  console.log('[DEBUG] generateInfographic: found infographic', infographic);
   infographic.innerHTML = '';
 
   const ghead = createGroup(infographic, 'ghead');
-  console.log('[DEBUG] generateInfographic: created ghead', ghead);
   createTitle(ghead);
-  console.log('[DEBUG] generateInfographic: created title');
   createDate(ghead);
-  console.log('[DEBUG] generateInfographic: created date');
+
+  // Add the histogram at the top, directly under the header
+  createAgeGroupHistogram(infographic, meta);
 
   const gcharts = createGroup(infographic, 'gcharts');
-  console.log('[DEBUG] generateInfographic: created gcharts', gcharts);
   createGenderDonut(gcharts, meta);
-  console.log('[DEBUG] generateInfographic: created gender donut');
   createPBDonut(gcharts, meta);
-  console.log('[DEBUG] generateInfographic: created PB donut');
   createFirstDonut(gcharts, meta);
-  console.log('[DEBUG] generateInfographic: created first donut');
   createMilestonesDonut(gcharts, meta);
-  console.log('[DEBUG] generateInfographic: created milestones donut');
 
   const g1 = createGroup(gcharts, 'g1');
-  console.log('[DEBUG] generateInfographic: created g1', g1);
   createTopAgeGrade(g1, meta);
-  console.log('[DEBUG] generateInfographic: created top age grade');
   createAges(g1, meta);
-  console.log('[DEBUG] generateInfographic: created ages');
   createVolunteers(g1, meta);
-  console.log('[DEBUG] generateInfographic: created volunteers');
 
   const g2 = createGroup(gcharts, 'g1');
-  console.log('[DEBUG] generateInfographic: created g2', g2);
   createTotalDistance(g2, meta);
-  console.log('[DEBUG] generateInfographic: created total distance');
 }
+// Add a stacked histogram for age group attendance by gender and PB status
+function createAgeGroupHistogram(target, meta) {
+  // Define colors for PB/noPB for each gender
+  const pbShades = {
+    male: '#3e95cd', // base
+    malePB: '#6fb8e6',
+    female: '#ffa300',
+    femalePB: '#ffd580',
+    other: '#5ea28e',
+    otherPB: '#8edbb3',
+    unknown: '#999999',
+    unknownPB: '#cccccc',
+  };
+
+  // Combine JM/JW, SM/SW, VM/VW into single age groups
+  function combineAgeGroupKey(key) {
+    // e.g. JM10/JW10 -> J10, SM25/SW25 -> S25, VM70/VW70 -> V70
+    return key.replace(/^J[MW]/, 'J').replace(/^S[MW]/, 'S').replace(/^V[MW]/, 'V');
+  }
+
+  // Aggregate all finishers into combined groups, excluding those with ageGroup containing '---'
+  const combinedGroups = {};
+  // Helper for assigning 10-year buckets (e.g., 0-9, 10-19, 20-29, ...)
+  function getDecadeBucket(group) {
+    // Accepts group keys like J10, J11, S25, V70, 10, 11, etc.
+    const match = group.match(/(\d{1,2})/);
+    if (!match) return group;
+    const age = parseInt(match[1], 10);
+    if (isNaN(age)) return group;
+    const lower = Math.floor(age / 10) * 10;
+    const upper = lower + 9;
+    return `${lower}-${upper}`;
+  }
+  for (const finisher of meta.finishers) {
+    const rawGroup = finisher.ageGroup;
+    if (!rawGroup) continue;
+    if (rawGroup.includes('---')) continue; // Exclude runners with no age
+    if (rawGroup.includes('WWC') || rawGroup.includes('MWC')) continue; // Exclude WWC and MWC
+    let group = combineAgeGroupKey(rawGroup);
+    // Assign to 10-year bucket
+    group = getDecadeBucket(group);
+    if (!combinedGroups[group]) {
+      combinedGroups[group] = {
+        male: { pb: 0, noPB: 0 },
+        female: { pb: 0, noPB: 0 },
+        other: { pb: 0, noPB: 0 },
+        unknown: { pb: 0, noPB: 0 },
+      };
+    }
+    const gender = ['male', 'female', 'other', 'unknown'].includes(finisher.gender) ? finisher.gender : 'unknown';
+    const isPB = finisher.achievement && finisher.achievement.includes('PB');
+    if (isPB) {
+      combinedGroups[group][gender].pb++;
+    } else {
+      combinedGroups[group][gender].noPB++;
+    }
+  }
+
+  // Get all unique combined age groups, sorted numerically by lower bound
+  const ageGroupsRaw = Object.keys(combinedGroups).sort((a, b) => {
+    const aNum = parseInt(a.split('-')[0], 10);
+    const bNum = parseInt(b.split('-')[0], 10);
+    if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
+    return a.localeCompare(b);
+  });
+  // Custom labels: first bucket as '-19', last as 'n+', others as 'n-m'
+  const ageGroupLabels = ageGroupsRaw.map((g, i, arr) => {
+    const [start, end] = g.split('-').map(Number);
+    if (i === 0) {
+      // First bucket: '-19'
+      return '-19';
+    } else if (i === arr.length - 1) {
+      // Last bucket: 'n+'
+      return start + '+';
+    } else {
+      // Middle buckets: 'n-m'
+      return g;
+    }
+  });
+
+  // Prepare datasets for Chart.js (stacked bar)
+  const groupData = combinedGroups;
+
+  // Prepare datasets for Chart.js (stacked bar)
+  const datasets = [];
+  const genders = ['male', 'female', 'other', 'unknown'];
+  // For each gender, push noPB (bottom) then PB (top)
+  for (const gender of genders) {
+    const noPBData = ageGroupsRaw.map(g => groupData[g][gender].noPB);
+    if (noPBData.some(v => v > 0)) {
+      datasets.push({
+        label: gender.charAt(0).toUpperCase() + gender.slice(1) + ' noPB',
+        data: noPBData,
+        backgroundColor: pbShades[gender],
+        stack: 'all',
+      });
+    }
+    const pbData = ageGroupsRaw.map(g => groupData[g][gender].pb);
+    if (pbData.some(v => v > 0)) {
+      datasets.push({
+        label: gender.charAt(0).toUpperCase() + gender.slice(1) + ' PB',
+        data: pbData,
+        backgroundColor: pbShades[gender + 'PB'],
+        stack: 'all',
+      });
+    }
+  }
+
+  // Create the chart
+  const fig = document.createElement('figure');
+  fig.id = 'agegroup-histogram';
+  fig.classList.add('histogram');
+  const canvas = document.createElement('canvas');
+  // Set the histogram height to match the donut diameter, plus extra for top labels (380px)
+  canvas.height = 380;
+
+  // Chart.js option: add extra top padding to chart area so top labels never overlap bars
+  const extraTopPadding = 36; // px
+  fig.append(canvas);
+  target.append(fig);
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: ageGroupLabels,
+      datasets: datasets,
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          top: extraTopPadding,
+          left: 36,
+          right: 36,
+        }
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: { display: false },
+        datalabels: {
+          display: function(context) {
+            // ...existing code...
+            return false;
+          },
+          textStrokeColor: 'black',
+          textStrokeWidth: 4,
+          color: 'white',
+          font: {
+              weight: 'bold',
+              size: '24px',
+              weight: 'bold',
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: {
+            color: 'white',
+            maxRotation: 90,
+            minRotation: 90,
+            font: {
+              size: '18px',
+              weight: 'bold'
+            },
+          },
+          grid: {
+            display: false,
+          },
+        },
+        y: {
+          display: true,
+          stacked: true,
+          title: { display: true, text: 'Age Profile', color: 'white', font: { size: 36, weight: 'bold' } },
+          beginAtZero: true,
+          grid: {
+            display: false,
+          },
+          ticks: {
+            display: false
+          },
+        },
+      },
+    },
+    plugins: [
+      ...(window.ChartDataLabels ? [ChartDataLabels] : []),
+      // Plugin to clip each bar to a rounded rectangle before drawing each dataset and custom datalabels
+      {
+        id: 'barClip',
+        beforeDatasetsDraw(chart) {
+          const {ctx} = chart;
+          const datasets = chart.data.datasets;
+          const meta0 = chart.getDatasetMeta(0);
+          const metaSets = meta0.data;
+          const radius = 4;
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = 'bold 24px sans-serif';
+          // For each bar index
+          for (let i = 0; i < metaSets.length; i++) {
+            // Find the top and bottom of the stack for this bar
+            let minY = Infinity, maxY = -Infinity, left = null, right = null;
+            let stackTops = [];
+            let stackBottoms = [];
+            let stackTotal = 0;
+            for (let d = 0; d < datasets.length; d++) {
+              const bar = chart.getDatasetMeta(d).data[i];
+              if (!bar) continue;
+              const {x, y, base, width} = bar;
+              if (left === null || x - width/2 < left) left = x - width/2;
+              if (right === null || x + width/2 > right) right = x + width/2;
+              minY = Math.min(minY, y, base);
+              maxY = Math.max(maxY, y, base);
+              stackTops.push(Math.min(y, base));
+              stackBottoms.push(Math.max(y, base));
+              stackTotal += datasets[d].data[i];
+            }
+            if (left !== null && right !== null && isFinite(minY) && isFinite(maxY)) {
+              ctx.save();
+              ctx.beginPath();
+              const w = right - left;
+              const h = maxY - minY;
+              const r = Math.min(radius, w / 2, h / 2);
+              ctx.moveTo(left + r, minY);
+              ctx.lineTo(right - r, minY);
+              ctx.quadraticCurveTo(right, minY, right, minY + r);
+              ctx.lineTo(right, maxY - r);
+              ctx.quadraticCurveTo(right, maxY, right - r, maxY);
+              ctx.lineTo(left + r, maxY);
+              ctx.quadraticCurveTo(left, maxY, left, maxY - r);
+              ctx.lineTo(left, minY + r);
+              ctx.quadraticCurveTo(left, minY, left + r, minY);
+              ctx.closePath();
+              ctx.clip();
+              // Draw all stack segments for this bar
+              for (let d = 0; d < datasets.length; d++) {
+                const bar = chart.getDatasetMeta(d).data[i];
+                if (bar && bar.draw) bar.draw(ctx);
+              }
+              // Draw custom datalabels for each stack segment if value >= 5
+              for (let d = 0; d < datasets.length; d++) {
+                const bar = chart.getDatasetMeta(d).data[i];
+                if (!bar) continue;
+                const value = datasets[d].data[i];
+                // Only show label if segment is at least 10x the label's text height
+                // Chart.js draws in canvas pixels, but the display may be scaled by DPR
+                const dpr = window.devicePixelRatio || 1;
+                const segmentHeight = Math.abs(bar.base - bar.y) / dpr;
+                ctx.save();
+                ctx.font = 'bold 24px sans-serif';
+                let textHeight = 24;
+                if (ctx.measureText) {
+                  const metrics = ctx.measureText(value);
+                  if ('actualBoundingBoxAscent' in metrics && 'actualBoundingBoxDescent' in metrics) {
+                    textHeight = (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent) / dpr;
+                  } else if ('fontBoundingBoxAscent' in metrics && 'fontBoundingBoxDescent' in metrics) {
+                    textHeight = (metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent) / dpr;
+                  } else {
+                    textHeight = 1.2 * 24 / dpr;
+                  }
+                }
+                ctx.restore();
+                const margin = 4;
+                if (value >= 6 && segmentHeight >= 3 * (textHeight + margin)) {
+                  // Restore label to vertical center of the segment
+                  const yTop = Math.min(bar.y, bar.base);
+                  const yBottom = Math.max(bar.y, bar.base);
+                  const yCenter = (yTop + yBottom) / 2;
+                  const xCenter = bar.x;
+                  ctx.save();
+                  ctx.textAlign = 'center';
+                  ctx.textBaseline = 'middle';
+                  ctx.lineWidth = 4;
+                  ctx.strokeStyle = 'black';
+                  ctx.strokeText(value, xCenter, yCenter);
+                  ctx.restore();
+                  ctx.fillStyle = 'white';
+                  ctx.textAlign = 'center';
+                  ctx.textBaseline = 'middle';
+                  ctx.fillText(value, xCenter, yCenter);
+                }
+              }
+              ctx.restore();
+              // Draw total above the bar horizontally
+              if (stackTotal > 0) {
+                const bar = chart.getDatasetMeta(0).data[i];
+                const xCenter = bar.x;
+                let yAbove = minY - 24; // 24px above the top of the bar for more space
+                // Ensure the label is always above the bar, but never overlaps it or goes off the canvas
+                // The extraTopPadding ensures minY is never too close to the top
+                ctx.save();
+                ctx.font = 'bold 20px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'black';
+                ctx.strokeText(stackTotal, xCenter, yAbove);
+                ctx.fillStyle = 'white';
+                ctx.fillText(stackTotal, xCenter, yAbove);
+                ctx.restore();
+              }
+            }
+          }
+          ctx.restore();
+          // Prevent Chart.js from drawing the bars and datalabels again
+          return false;
+        }
+      },
+      // Plugin to draw the rounded outline after bars
+      {
+        id: 'barOutline',
+        afterDraw(chart) {
+          const {ctx, chartArea} = chart;
+          if (!chartArea) return;
+          ctx.save();
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = '#fff';
+          const metaSets = chart.getDatasetMeta(0).data;
+          const radius = 4;
+          for (let i = 0; i < metaSets.length; i++) {
+            // Find the top and bottom of the stack for this bar
+            let minY = Infinity, maxY = -Infinity, left = null, right = null;
+            for (let d = 0; d < chart.data.datasets.length; d++) {
+              const bar = chart.getDatasetMeta(d).data[i];
+              if (!bar) continue;
+              const {x, y, base, width} = bar;
+              if (left === null || x - width/2 < left) left = x - width/2;
+              if (right === null || x + width/2 > right) right = x + width/2;
+              minY = Math.min(minY, y, base);
+              maxY = Math.max(maxY, y, base);
+            }
+            if (left !== null && right !== null && isFinite(minY) && isFinite(maxY)) {
+              // Draw a rounded rectangle for the whole bar
+              ctx.beginPath();
+              const w = right - left;
+              const h = maxY - minY;
+              const r = Math.min(radius, w / 2, h / 2);
+              ctx.moveTo(left + r, minY);
+              ctx.lineTo(right - r, minY);
+              ctx.quadraticCurveTo(right, minY, right, minY + r);
+              ctx.lineTo(right, maxY - r);
+              ctx.quadraticCurveTo(right, maxY, right - r, maxY);
+              ctx.lineTo(left + r, maxY);
+              ctx.quadraticCurveTo(left, maxY, left, maxY - r);
+              ctx.lineTo(left, minY + r);
+              ctx.quadraticCurveTo(left, minY, left + r, minY);
+              ctx.closePath();
+              ctx.stroke();
+            }
+          }
+          ctx.restore();
+        }
+      }
+    ],
+  });
+
+}
+
 
 
 function simplify(text) {
@@ -410,29 +781,32 @@ function extractMeta(finishers) {
   };
 
   for (const finisher of finishers) {
-    console.log(finisher);
-    if (finisher.gender) {
-      if (genderTerms.male.includes(finisher.gender)) {
-        meta.genders.male++;
-        finisher.gender = 'male';
-      } else if (genderTerms.female.includes(finisher.gender)) {
-        meta.genders.female++;
-        finisher.gender = 'female';
-      } else {
-        meta.genders.unknown++;
-        finisher.gender = 'unknown';
-      }
+    // Determine gender assignment based on user intent:
+    // - 'other': has name, but gender is empty or missing
+    // - 'unknown': no name (placeholder/time only rows, non-barcode unknowns, or name is 'Unknown')
+    let assignedGender = null;
+    const nameVal = (finisher.name || '').trim().toLowerCase();
+    const isUnknownName = !nameVal || nameVal === 'unknown';
+    if (isUnknownName) {
+      // No runner info or name is 'Unknown': unknown (non-barcode/placeholder)
+      assignedGender = 'unknown';
+      meta.genders.unknown++;
+    } else if (typeof finisher.gender === 'string' && finisher.gender.length === 0) {
+      // Runner exists, but no gender info: other
+      assignedGender = 'other';
+      meta.genders.other++;
+    } else if (genderTerms.male.includes(finisher.gender)) {
+      assignedGender = 'male';
+      meta.genders.male++;
+    } else if (genderTerms.female.includes(finisher.gender)) {
+      assignedGender = 'female';
+      meta.genders.female++;
     } else {
-      // if the length of the gender string is 0, we'll assume it's other
-      // otherwise we'll assume it's unknown
-      if (typeof finisher.gender === 'string' && finisher.gender.length === 0) {
-        meta.genders.other++;
-        finisher.gender = 'other';
-      } else {
-        meta.genders.unknown++;
-        finisher.gender = 'unknown';
-      }
+      // Runner exists, but gender string is not recognized: other
+      assignedGender = 'other';
+      meta.genders.other++;
     }
+    finisher.gender = assignedGender;
 
     if (finisher.achievement) {
       meta.achievement[finisher.achievement] = (meta.achievement[finisher.achievement] ?? 0) + 1;
@@ -559,6 +933,8 @@ function delayedStart() {
 
 function addLegendToKey(key, data) {
   data.labels.forEach((label, index) => {
+    // Always hide the 'No PB' key
+    if (label === 'No PB') return;
     const legendItem = document.createElement('div');
     legendItem.style.backgroundColor = data.datasets[0].backgroundColor[index];
     legendItem.textContent = label;

@@ -1,3 +1,25 @@
+#infographic .donut-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: var(--width);
+    margin-bottom: 1.5em;
+}
+#infographic .histogram {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 2em;
+    padding-bottom: 0.5em;
+}
+
+#infographic .histogram canvas {
+    width: 100% !important;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    /* height removed to allow Chart.js to control aspect ratio */
+}
 :root {
     --purple: #2b233d;
     --purple2: #47173F;
