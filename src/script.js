@@ -80,7 +80,8 @@ function createTopAgeGrade(target, meta) {
   target.append(fig);
 
   // extract the highest age grade from the keys in meta.ageGrades
-  const ageGrades = Object.keys(meta.ageGrades);
+  const ageGradesRaw = Object.keys(meta.ageGrades);
+  const ageGrades = ageGradesRaw.map(s => Number(s.replace('%', '')));
   const highestAgeGrade = Math.max(...ageGrades);
 
   const gauge = chrome.runtime.getURL('src/i/gauge.svg');
@@ -341,25 +342,40 @@ function createDate(target) {
 
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
+  console.log('[DEBUG] generateInfographic: found infographic', infographic);
   infographic.innerHTML = '';
 
   const ghead = createGroup(infographic, 'ghead');
+  console.log('[DEBUG] generateInfographic: created ghead', ghead);
   createTitle(ghead);
+  console.log('[DEBUG] generateInfographic: created title');
   createDate(ghead);
+  console.log('[DEBUG] generateInfographic: created date');
 
   const gcharts = createGroup(infographic, 'gcharts');
+  console.log('[DEBUG] generateInfographic: created gcharts', gcharts);
   createGenderDonut(gcharts, meta);
+  console.log('[DEBUG] generateInfographic: created gender donut');
   createPBDonut(gcharts, meta);
+  console.log('[DEBUG] generateInfographic: created PB donut');
   createFirstDonut(gcharts, meta);
+  console.log('[DEBUG] generateInfographic: created first donut');
   createMilestonesDonut(gcharts, meta);
+  console.log('[DEBUG] generateInfographic: created milestones donut');
 
   const g1 = createGroup(gcharts, 'g1');
+  console.log('[DEBUG] generateInfographic: created g1', g1);
   createTopAgeGrade(g1, meta);
+  console.log('[DEBUG] generateInfographic: created top age grade');
   createAges(g1, meta);
+  console.log('[DEBUG] generateInfographic: created ages');
   createVolunteers(g1, meta);
+  console.log('[DEBUG] generateInfographic: created volunteers');
 
   const g2 = createGroup(gcharts, 'g1');
+  console.log('[DEBUG] generateInfographic: created g2', g2);
   createTotalDistance(g2, meta);
+  console.log('[DEBUG] generateInfographic: created total distance');
 }
 
 
@@ -488,9 +504,14 @@ function extractMeta(finishers) {
 
 function extractVolunteers() {
   const volunteers = {};
-  const volunteerDiv = document.querySelector('div.Results + div p');
-  volunteers.count = volunteerDiv.querySelectorAll('a').length;
-
+  // Find the volunteers table and count the rows
+  const table = document.querySelector('table.Volunteers-table');
+  if (table) {
+    const rows = table.querySelectorAll('tr.Volunteers-table-row');
+    volunteers.count = rows.length;
+  } else {
+    volunteers.count = 0;
+  }
   return volunteers;
 }
 
@@ -504,7 +525,8 @@ function start() {
   const url = String(window.location.href);
 
   const isLatestResultsPage = url.includes('/latestresults');
-  const isPreviousResultsPage = /\/results\/\d+\//.test(url);
+  // Match /results/12345/ or /results/YYYY-MM-DD/
+  const isPreviousResultsPage = /\/results\/(\d+|\d{4}-\d{2}-\d{2})\//.test(url);
   const isResultsPage = isLatestResultsPage || isPreviousResultsPage;
 
   if (!isResultsPage) {
