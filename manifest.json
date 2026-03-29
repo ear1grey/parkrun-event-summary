@@ -35,7 +35,7 @@
         "*://*.parkrun.us/*/results/*"
       ],
     
-     "js": ["src/lib/chart.js", "src/lib/labels.js", "src/script.js"],
+     "js": ["src/lib/chart.js", "src/lib/labels.js", "src/lib/results-page.js", "src/script.js"],
       "run_at": "document_end",
       "css" : ["src/style.css"]
      }
