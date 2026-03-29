@@ -503,11 +503,7 @@ function start() {
 
   const url = String(window.location.href);
 
-  const isLatestResultsPage = url.includes('/latestresults');
-  const isPreviousResultsPage = /\/results\/\d+\//.test(url);
-  const isResultsPage = isLatestResultsPage || isPreviousResultsPage;
-
-  if (!isResultsPage) {
+  if (!parkrunResultsPage.isParkrunEventResultsPage(url)) {
     return;
   }
 
