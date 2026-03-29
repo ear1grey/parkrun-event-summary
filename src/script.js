@@ -298,7 +298,7 @@ function createInfographicElement() {
     infographic.innerHTML = '<code>Preparing Charts...</code>';
     header.before(infographic);
 
-    let p = document.createElement('p');
+    const p = document.createElement('p');
     p.id = 'linkToChromeExtension';
     p.innerHTML = 'Infographic made with the <a href="https://chromewebstore.google.com/detail/parkrun-event-summary/nfdbgfodockojbhmenjohphggbokgmaf">parkrun Event Summary</a> Chrome extension.';
     header.before(p);
