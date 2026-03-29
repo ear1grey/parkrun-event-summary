@@ -243,8 +243,9 @@ function createDonut(target, config) {
     },
   };
 
-  // Create a new Chart.js instance
-  const chart = new Chart(canvas, {
+  // Create a new Chart.js instance (retained by Chart.js on the canvas)
+  // eslint-disable-next-line no-new -- doughnut charts attach to the canvas
+  new Chart(canvas, {
     type: 'doughnut',
     data,
     options,
