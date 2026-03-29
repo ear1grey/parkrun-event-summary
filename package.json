@@ -1,6 +1,6 @@
 {
   "name": "parkruneventsummary",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
   "main": "script.js",
   "type": "module",
@@ -35,7 +35,9 @@
     },
     "overrides": [
       {
-        "files": ["**/*.test.js"],
+        "files": [
+          "**/*.test.js"
+        ],
         "env": {
           "node": true
         },
