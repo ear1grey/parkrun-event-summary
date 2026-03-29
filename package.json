@@ -9,7 +9,7 @@
     "test:watch": "vitest",
     "format": "prettier --write \"**/*.{js,css,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,css,json,md}\"",
-    "lint": "eslint src/script.js src/lib/results-page.js src/lib/results-page.test.js",
+    "lint": "eslint src/script.js src/lib/results-page.js src/lib/results-page.test.js src/lib/age-grade.js src/lib/age-grade.test.js",
     "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json src i;cp pes.zip pes.xpi;"
   },
   "author": "Rich Boakes <rich@boakes.org>",
@@ -28,6 +28,7 @@
       "browser": true
     },
     "globals": {
+      "parkrunAgeGrade": "readonly",
       "parkrunResultsPage": "readonly",
       "chrome": "readonly",
       "Chart": "readonly",

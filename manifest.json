@@ -39,6 +39,7 @@
         "src/lib/chart.js",
         "src/lib/labels.js",
         "src/lib/results-page.js",
+        "src/lib/age-grade.js",
         "src/script.js"
       ],
       "run_at": "document_end",

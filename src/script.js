@@ -74,13 +74,13 @@ function createTopAgeGrade(target, meta) {
   fig.classList.add('info');
   target.append(fig);
 
-  // extract the highest age grade from the keys in meta.ageGrades
-  const ageGrades = Object.keys(meta.ageGrades);
-  const highestAgeGrade = Math.max(...ageGrades);
+  const label = parkrunAgeGrade.topAgeGradePercentDisplay(meta.ageGrades);
 
   const gauge = chrome.runtime.getURL('src/i/gauge.svg');
 
-  fig.innerHTML = `<img alt="A gauge" src="${gauge}"><p>Top Age<br>Grade: ${highestAgeGrade}%</p>`;
+  fig.innerHTML = `<img alt="A gauge" src="${gauge}"><p>Top Age<br>Grade: ${
+    label != null ? `${label}%` : '—'
+  }</p>`;
 }
 
 function createTotalDistance(target, meta) {
