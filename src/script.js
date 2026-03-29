@@ -363,11 +363,6 @@ function generateInfographic(meta) {
 }
 
 
-function simplify(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-
-
 function extractMeta(finishers) {
   const meta = {};
   meta.genders = { male: 0, female: 0, unknown: 0, other: 0 };
