@@ -102,7 +102,7 @@ function createTotalDistance(target, meta) {
 
   const tape = chrome.runtime.getURL('src/i/earth.svg');
 
-  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Together we covered ${todaysDistance.toLocaleString()}km today.<br>Enough to complete a relay around the Earth in ${earthLaps} days!</p>`;
+  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Combined Distance:<br>${todaysDistance.toLocaleString()}km.</p>`;
 }
 
 
@@ -376,12 +376,13 @@ function generateInfographic(meta) {
   createGenderDonut(gcharts, meta);
   createPBDonut(gcharts, meta);
   createFirstDonut(gcharts, meta);
-  createMilestonesDonut(gcharts, meta);
 
   const g1 = createGroup(gcharts, 'g1');
   createTopAgeGrade(g1, meta);
   createAges(g1, meta);
   createVolunteers(g1, meta);
+
+  createMilestonesDonut(gcharts, meta);
 
   const g2 = createGroup(gcharts, 'g1');
   createTotalDistance(g2, meta);
@@ -451,12 +452,12 @@ function createAgeGroupHistogram(target, meta) {
     if (!isNaN(aNum) && !isNaN(bNum)) return aNum - bNum;
     return a.localeCompare(b);
   });
-  // Custom labels: first bucket as '-19', last as 'n+', others as 'n-m'
+  // Custom labels: first bucket as '1-19', last as 'n+', others as 'n-m'
   const ageGroupLabels = ageGroupsRaw.map((g, i, arr) => {
     const [start, end] = g.split('-').map(Number);
     if (i === 0) {
-      // First bucket: '-19'
-      return '-19';
+      // First bucket: '1-19'
+      return '1-19';
     } else if (i === arr.length - 1) {
       // Last bucket: 'n+'
       return start + '+';
@@ -548,10 +549,10 @@ function createAgeGroupHistogram(target, meta) {
           stacked: true,
           ticks: {
             color: 'white',
-            maxRotation: 90,
-            minRotation: 90,
+            maxRotation: 0,
+            minRotation: 0,
             font: {
-              size: '18px',
+              size: 30,
               weight: 'bold'
             },
           },
