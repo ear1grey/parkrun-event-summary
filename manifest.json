@@ -34,11 +34,16 @@
         "*://*.parkrun.sg/*/results/*",
         "*://*.parkrun.us/*/results/*"
       ],
-    
-     "js": ["src/lib/chart.js", "src/lib/labels.js", "src/lib/results-page.js", "src/script.js"],
+
+      "js": [
+        "src/lib/chart.js",
+        "src/lib/labels.js",
+        "src/lib/results-page.js",
+        "src/script.js"
+      ],
       "run_at": "document_end",
-      "css" : ["src/style.css"]
-     }
+      "css": ["src/style.css"]
+    }
   ],
   "web_accessible_resources": [
     {
