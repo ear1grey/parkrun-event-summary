@@ -487,11 +487,9 @@ function extractMeta(finishers) {
 
 
 function extractVolunteers() {
-  const volunteers = {};
-  const volunteerDiv = document.querySelector('div.Results + div p');
-  volunteers.count = volunteerDiv.querySelectorAll('a').length;
-
-  return volunteers;
+  return {
+    count: parkrunResultsPage.countVolunteers(document),
+  };
 }
 
 
