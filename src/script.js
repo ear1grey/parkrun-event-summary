@@ -207,7 +207,7 @@ function createDonut(target, config) {
   
   // add data from raw to the chart
   for (const item of config.raw) {
-    if (item.value != 0) {
+    if (item.value !== 0) {
       data.labels.push(item.label);
       data.datasets[0].data.push(item.value);
       data.datasets[0].backgroundColor.push(item.color);
