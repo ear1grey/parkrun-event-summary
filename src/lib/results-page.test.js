@@ -63,4 +63,40 @@ describe('parkrunResultsPage', () => {
       expect(isParkrunEventResultsPage('')).toBe(false);
     });
   });
+
+  describe('countVolunteers', () => {
+    it('counts Volunteers table rows', () => {
+      const html = `
+        <!DOCTYPE html>
+        <div class="Results"></div>
+        <div class="Volunteers">
+          <p>Thanks</p>
+          <table class="Volunteers-table">
+            <tbody>
+              <tr class="Volunteers-table-row"><td>a</td></tr>
+              <tr class="Volunteers-table-row"><td>b</td></tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      const dom = new JSDOM(html, { runScripts: 'dangerously' });
+      loadResultsPageScriptIntoWindow(dom.window);
+      const { countVolunteers } = dom.window.parkrunResultsPage;
+      expect(countVolunteers(dom.window.document)).toBe(2);
+    });
+
+    it('counts legacy volunteer links in paragraph', () => {
+      const html = `
+        <!DOCTYPE html>
+        <div class="Results"></div>
+        <div>
+          <p><a href="/a">A</a> <a href="/b">B</a></p>
+        </div>
+      `;
+      const dom = new JSDOM(html, { runScripts: 'dangerously' });
+      loadResultsPageScriptIntoWindow(dom.window);
+      const { countVolunteers } = dom.window.parkrunResultsPage;
+      expect(countVolunteers(dom.window.document)).toBe(2);
+    });
+  });
 });
