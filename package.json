@@ -25,7 +25,27 @@
     "root": true,
     "env": {
       "browser": true
-    }
+    },
+    "globals": {
+      "parkrunResultsPage": "readonly",
+      "chrome": "readonly",
+      "Chart": "readonly",
+      "ChartDataLabels": "readonly"
+    },
+    "overrides": [
+      {
+        "files": ["**/*.test.js"],
+        "env": {
+          "node": true
+        },
+        "globals": {
+          "describe": "readonly",
+          "it": "readonly",
+          "expect": "readonly",
+          "beforeAll": "readonly"
+        }
+      }
+    ]
   },
   "prettier": {
     "singleQuote": true,
