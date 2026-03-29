@@ -57,13 +57,13 @@ function createAges(target, meta) {
   let total = 0;
   let count = 0;
 
-  for (const group in meta.ageGroups) {
+  Object.keys(meta.ageGroups).forEach((group) => {
     const ages = group.replace(/\D/g, '-').split('-').filter(Boolean);
-    if(ages.length === 0) continue;
+    if(ages.length === 0) return;
     const avgAge = (parseInt(ages[0]) + parseInt(ages[ages.length - 1])) / 2;
     total += avgAge * meta.ageGroups[group];
     count += meta.ageGroups[group];
-  }
+  });
 
   const averageAge = Number(total / count).toFixed(0);
   const cake = chrome.runtime.getURL('src/i/cake.svg');
