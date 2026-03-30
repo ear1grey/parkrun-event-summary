@@ -34,7 +34,13 @@ function createVolunteers(target, meta) {
   fig.classList.add('info');
   target.append(fig);
   const viz = chrome.runtime.getURL('src/i/hiviz.svg');
-  fig.innerHTML = `<img alt="A hi-viz vest" src="${viz}"><p>${meta.volunteers.count} Volunteers</p>`;
+  const p = document.createElement('p');
+  p.innerHTML = `Volunteers:<br>${meta.volunteers.count}`;
+  const img = document.createElement('img');
+  img.alt = 'A hi-viz vest';
+  img.src = viz;
+  img.className = 'right-icon';
+  fig.append(p, img);
 }
 
 
@@ -50,7 +56,7 @@ function createGroup(target, id) {
 function createAges(target, meta) {
   const fig = document.createElement('div');
   fig.id = 'ages';
-  fig.classList.add('info');
+  fig.classList.add('info'); // left-aligned by default
   target.append(fig);
 
   let total = 0;
@@ -60,7 +66,6 @@ function createAges(target, meta) {
     const ages = group.replace(/\D/g, '-').split('-').filter(Boolean);
     if (ages.length === 0) continue;
     const avgAge = (parseInt(ages[0]) + parseInt(ages[ages.length - 1])) / 2;
-    console.log(group, ages, avgAge);
     total += avgAge * meta.ageGroups[group];
     count += meta.ageGroups[group];
   }
@@ -68,14 +73,14 @@ function createAges(target, meta) {
   const averageAge = Number(total / count).toFixed(0);
   const cake = chrome.runtime.getURL('src/i/cake.svg');
 
-  fig.innerHTML = `<img alt="A birthday cake" src="${cake}"><p>Average<br>Age: ${averageAge}</p>`;
+  fig.innerHTML = `<img alt="A birthday cake" src="${cake}"><p>Average Age:<br>${averageAge}</p>`;
 }
 
 
 function createTopAgeGrade(target, meta) {
   const fig = document.createElement('div');
   fig.id = 'agegrade';
-  fig.classList.add('info');
+  fig.classList.add('info'); // left-aligned by default
   target.append(fig);
 
   // extract the highest age grade from the keys in meta.ageGrades
@@ -85,7 +90,7 @@ function createTopAgeGrade(target, meta) {
 
   const gauge = chrome.runtime.getURL('src/i/gauge.svg');
 
-  fig.innerHTML = `<img alt="A gauge" src="${gauge}"><p>Top Age<br>Grade: ${highestAgeGrade}%</p>`;
+  fig.innerHTML = `<img alt="A gauge" src="${gauge}"><p>Top Age Grade:<br>${highestAgeGrade}%</p>`;
 }
 
 
@@ -102,7 +107,14 @@ function createTotalDistance(target, meta) {
 
   const tape = chrome.runtime.getURL('src/i/earth.svg');
 
-  fig.innerHTML = `<img alt="A tape measure" src="${tape}"><p>Combined Distance:<br>${todaysDistance.toLocaleString()}km.</p>`;
+  const p = document.createElement('p');
+  p.innerHTML = `Today's Total:<br> ${todaysDistance.toLocaleString()}km`;
+  const img = document.createElement('img');
+  img.alt = 'A tape measure';
+  img.src = tape;
+  img.className = 'right-icon';
+  fig.append(p);
+  fig.append(img);
 }
 
 
@@ -112,10 +124,10 @@ function createGenderDonut(target, meta) {
     id: 'gender-donut',
     message: `<h1>${participants}</h1><p>Participants</p>`,
     raw: [
-      { label: 'Male', value: meta.genders.male, color: genderColours.male },
+      { label: 'M', value: meta.genders.male, color: genderColours.male },
       { label: 'Other', value: meta.genders.other, color: genderColours.other },
-      { label: 'Female', value: meta.genders.female, color: genderColours.female },
-      { label: 'Unknown', value: meta.genders.unknown, color: genderColours.unknown },
+      { label: 'F', value: meta.genders.female, color: genderColours.female },
+      { label: 'No Barcode', value: meta.genders.unknown, color: genderColours.unknown },
     ].sort((a, b) => b.value - a.value), // Sort descending by value
   };
   createDonut(target, config);
@@ -152,16 +164,17 @@ function createPBDonut(target, meta) {
     otherPB: '#8edbb3',
     unknown: '#999999',
     unknownPB: '#cccccc',
+    noPB: '#39546a', // 25% darker blue for None
   };
 
   const config = {
     id: 'donut-pb',
     message: `<h1>${pbs}</h1><p>Personal Bests</p><p>${Number(pbs / participants * 100).toFixed(1)}% of participants</p>`,
     raw: [
-      { label: 'Male PB', value: meta.pb.male, color: pbShades.malePB },
-      { label: 'Other PB', value: meta.pb.other, color: pbShades.otherPB },
-      { label: 'Female PB', value: meta.pb.female, color: pbShades.femalePB },
-      { label: 'No PB', value: participants - pbs, color: pbShades.unknown },
+      { label: 'M', value: meta.pb.male, color: pbShades.malePB },
+      { label: 'Other', value: meta.pb.other, color: pbShades.otherPB },
+      { label: 'F', value: meta.pb.female, color: pbShades.femalePB },
+      { label: 'None', value: participants - pbs, color: pbShades.noPB, showInKey: true },
     ].sort((a, b) => b.value - a.value), // Sort descending by value
   };
   createDonut(target, config);
@@ -237,7 +250,25 @@ function createDonut(target, config) {
     }
   }
 
-  addLegendToKey(key, data);
+  // For PB donut, add 'PBs:' label before the key
+  if (config.id === 'donut-pb') {
+    const pbLabel = document.createElement('div');
+    pbLabel.textContent = 'PBs:';
+    pbLabel.style.fontWeight = 'bold';
+    pbLabel.style.marginBottom = '4px';
+    pbLabel.style.border = 'none'; // No border on PBs: label
+    key.append(pbLabel);
+  }
+  // For gender donut, add 'Gender:' label before the key
+  if (config.id === 'gender-donut') {
+    const genderLabel = document.createElement('div');
+    genderLabel.textContent = 'Gender:';
+    genderLabel.style.fontWeight = 'bold';
+    genderLabel.style.marginBottom = '4px';
+    genderLabel.style.border = 'none';
+    key.append(genderLabel);
+  }
+  addLegendToKey(key, data, config.id, config.raw);
 
   // Prepare the options for the chart
   const options = {
@@ -380,12 +411,12 @@ function generateInfographic(meta) {
   const g1 = createGroup(gcharts, 'g1');
   createTopAgeGrade(g1, meta);
   createAges(g1, meta);
-  createVolunteers(g1, meta);
 
   createMilestonesDonut(gcharts, meta);
 
   const g2 = createGroup(gcharts, 'g1');
   createTotalDistance(g2, meta);
+  createVolunteers(g2, meta);
 }
 // Add a stacked histogram for age group attendance by gender and PB status
 function createAgeGroupHistogram(target, meta) {
@@ -932,13 +963,24 @@ function delayedStart() {
 }
 
 
-function addLegendToKey(key, data) {
+function addLegendToKey(key, data, chartId, rawConfig) {
   data.labels.forEach((label, index) => {
-    // Always hide the 'No PB' key
-    if (label === 'No PB') return;
+    // For PB donut, always show 'No PB'. For others, hide if needed.
+    if (label === 'No PB' && chartId !== 'donut-pb') return;
+    if (label === 'No PB' && chartId === 'donut-pb') {
+      // Only show if present in rawConfig (always, due to showInKey)
+    } else if (label === 'No PB') {
+      return;
+    }
     const legendItem = document.createElement('div');
     legendItem.style.backgroundColor = data.datasets[0].backgroundColor[index];
     legendItem.textContent = label;
+    // Make key text black except for 'None' and 'First ever!'
+    if (label === 'None' || label === 'First ever!') {
+      legendItem.style.color = 'white';
+    } else {
+      legendItem.style.color = 'black';
+    }
     key.append(legendItem);
   });
 }

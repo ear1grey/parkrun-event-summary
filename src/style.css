@@ -1,3 +1,47 @@
+#main #distance p,
+#main #volunteers p {
+    text-align: right;
+    width: 100%;
+}
+#distance,
+#volunteers {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: right;
+    width: 100%;
+}
+.right-align-icon {
+    text-align: right;
+    justify-content: flex-end !important;
+}
+.right-align-icon .right-icon {
+    margin-left: 1em;
+    vertical-align: middle;
+}
+#main #distance p,
+#main #volunteers p {
+    text-align: right;
+    width: 100%;
+}
+#distance,
+#volunteers {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: right;
+    width: 100%;
+}
+.right-align-icon {
+    text-align: right;
+    justify-content: flex-end !important;
+}
+.right-align-icon .right-icon {
+    margin-left: 1em;
+    vertical-align: middle;
+}
 #infographic .donut-wrap {
     display: flex;
     flex-direction: column;
@@ -45,7 +89,7 @@
     --rows: auto;
     --width: 340px;
 
-    --distanceFlex: column;
+    --distanceFlex: row;
 } 
 
 .group {
@@ -128,13 +172,16 @@
     line-height: 0.75em;
 }
 
+
 #main .info {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     font-size: 1.5em;
     gap: 1em;
+    width: 100%;
+    text-align: left;
 }
 
 #main .info img {
@@ -142,9 +189,11 @@
     vertical-align: middle;
 }
 
+
 #main .info p {
     margin: 0;
     text-align: left;
+    width: 100%;
 }
 
 #main .info p img {
@@ -156,7 +205,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 0.5em auto 1em auto
+    margin: 0.5em auto 1em auto;
 }
 
 #infographic .key div {
