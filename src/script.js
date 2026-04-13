@@ -539,6 +539,14 @@ function createAgeGroupHistogram(target, meta) {
   fig.append(canvas);
   target.append(fig);
 
+  // Custom tooltip positioner: follow mouse Y exactly
+  Chart.Tooltip.positioners.followMouse = function(elements, eventPosition) {
+    return {
+      x: eventPosition.x,
+      y: eventPosition.y,
+    };
+  };
+
   new Chart(canvas, {
     type: 'bar',
     data: {
@@ -560,6 +568,18 @@ function createAgeGroupHistogram(target, meta) {
           display: false,
         },
         title: { display: false },
+        tooltip: {
+          enabled: true,
+          position: 'followMouse',
+          titleFont: { size: 24 },
+          bodyFont: { size: 24 },
+          padding: 12,
+          backgroundColor: '#000000',
+          titleColor: '#ffffff',
+          bodyColor: '#ffffff',
+          cornerRadius: 6,
+          displayColors: true,
+        },
         datalabels: {
           display: function(context) {
             // ...existing code...
@@ -733,7 +753,7 @@ function createAgeGroupHistogram(target, meta) {
       // Plugin to draw the rounded outline after bars
       {
         id: 'barOutline',
-        afterDraw(chart) {
+        afterDatasetsDraw(chart) {
           const {ctx, chartArea} = chart;
           if (!chartArea) return;
           ctx.save();
