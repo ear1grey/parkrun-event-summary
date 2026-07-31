@@ -53,8 +53,15 @@
 #infographic .histogram {
     width: 100%;
     max-width: 100%;
-    margin-top: 2em;
+    /* Extra breathing room between the title row and the age profile */
+    margin-top: 3.25em;
+    margin-bottom: 1rem;
     padding-bottom: 0.5em;
+}
+
+/* Separate the milestones donut from the key sitting above it. */
+#infographic .donut-wrap-dmilestones {
+    margin-top: 1rem;
 }
 
 #infographic .histogram canvas {
@@ -100,6 +107,14 @@
     align-self: stretch;
     width: var(--width);
     height: auto;
+}
+
+/* The stat columns either side of the milestones donut: let them take up any
+   spare width in the row so their text and icons can grow into it. */
+#gcharts .group#g1 {
+    flex: 1 1 var(--width);
+    min-width: var(--width);
+    width: auto;
 }
 
 #infographic {
@@ -178,14 +193,17 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    font-size: 1.5em;
-    gap: 1em;
+    /* Grow with the available width so these read at a similar weight to the
+       donuts beside them; the icon is sized in em so it scales along too. */
+    font-size: clamp(1.215em, 2.106vw, 2.106em);
+    gap: 0.75em;
     width: 100%;
     text-align: left;
 }
 
 #main .info img {
-    width: 3em;
+    width: 2.6em;
+    flex: none;
     vertical-align: middle;
 }
 
@@ -219,7 +237,7 @@
 
 #main #linkToChromeExtension {
     text-align: center;
-    font-weight: bold; */
+    font-weight: bold;
     font-size: 90%;
     margin: 0.2em;
 }
@@ -232,4 +250,22 @@
 
 #main #distance {
     flex-direction: var(--distanceFlex);
+}
+
+#copy-infographic {
+    margin-top: 1em;
+    padding: 0.6em 1.5em;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    background: var(--purple2);
+    border: solid 2px var(--apricot);
+    border-radius: 0.4em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#copy-infographic:hover {
+    background: var(--apricot);
+    color: var(--purple2);
 }

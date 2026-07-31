@@ -212,6 +212,8 @@ function createDonut(target, config) {
   // Create a wrapper to hold both key and donut, for centering
   const donutWrap = document.createElement('div');
   donutWrap.classList.add('donut-wrap');
+  // The id lives on the inner figure, so mirror it here for styling the wrapper.
+  donutWrap.classList.add(`donut-wrap-${config.id}`);
   donutWrap.style.display = 'flex';
   donutWrap.style.flexDirection = 'column';
   donutWrap.style.alignItems = 'center';
@@ -392,6 +394,86 @@ function createDate(target) {
 }
 
 
+// Properties that decide how the infographic looks. html2canvas renders into a
+// detached clone document, which does not reliably pick up styles injected by
+// the extension -- without these the capture comes out unstyled: no purple
+// background, black text and everything stacked in one narrow column.
+const CAPTURED_STYLE_PROPS = [
+  'background-color', 'background-image', 'color', 'font-size', 'font-family',
+  'font-weight', 'font-style', 'line-height', 'text-align', 'text-transform',
+  'letter-spacing', 'display', 'flex-direction', 'flex-wrap', 'flex-grow',
+  'flex-shrink', 'flex-basis', 'align-items', 'align-self', 'justify-content',
+  'gap', 'width', 'height', 'min-width', 'max-width', 'margin', 'padding',
+  'border', 'border-radius', 'position', 'top', 'left', 'box-sizing',
+  'vertical-align', 'white-space', 'overflow-wrap',
+];
+
+
+// Copies the live computed styles onto the cloned nodes as inline styles, so
+// the capture no longer depends on the stylesheet reaching the clone document.
+function inlineComputedStyles(source, target) {
+  const sourceNodes = [source, ...source.querySelectorAll('*')];
+  const targetNodes = [target, ...target.querySelectorAll('*')];
+
+  for (let i = 0; i < sourceNodes.length && i < targetNodes.length; i += 1) {
+    // Canvases are copied as pixels by html2canvas, so leave them alone.
+    if (targetNodes[i].tagName === 'CANVAS') continue;
+
+    const computed = getComputedStyle(sourceNodes[i]);
+    for (const prop of CAPTURED_STYLE_PROPS) {
+      const value = computed.getPropertyValue(prop);
+      if (value) targetNodes[i].style.setProperty(prop, value);
+    }
+  }
+}
+
+
+function copyInfographicToClipboard() {
+  const infographic = document.querySelector('#infographic');
+  if (!infographic) return;
+  const btn = document.querySelector('#copy-infographic');
+  const originalText = btn?.textContent;
+
+  // Temporarily hide the copy button so it doesn't appear in the screenshot
+  if (btn) btn.style.display = 'none';
+
+  html2canvas(infographic, {
+    // Match the on-screen background rather than leaving the capture
+    // transparent, which reads as white when pasted into most apps.
+    backgroundColor: getComputedStyle(infographic).backgroundColor,
+    useCORS: true,
+    scale: window.devicePixelRatio || 2,
+    width: infographic.offsetWidth,
+    windowWidth: document.documentElement.clientWidth,
+    onclone: (doc, element) => {
+      inlineComputedStyles(infographic, element);
+      const clonedBtn = element.querySelector('#copy-infographic');
+      if (clonedBtn) clonedBtn.style.display = 'none';
+    },
+  }).then(canvas => {
+    if (btn) btn.style.display = '';
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob }),
+      ]).then(() => {
+        if (btn) {
+          btn.textContent = 'Copied!';
+          setTimeout(() => { btn.textContent = originalText; }, 2000);
+        }
+      }).catch(() => {
+        if (btn) {
+          btn.textContent = 'Copy failed';
+          setTimeout(() => { btn.textContent = originalText; }, 2000);
+        }
+      });
+    }, 'image/png');
+  }).catch(() => {
+    if (btn) btn.style.display = '';
+  });
+}
+
+
 function generateInfographic(meta) {
   const infographic = document.querySelector('#infographic');
   infographic.innerHTML = '';
@@ -417,6 +499,12 @@ function generateInfographic(meta) {
   const g2 = createGroup(gcharts, 'g1');
   createTotalDistance(g2, meta);
   createVolunteers(g2, meta);
+
+  const copyBtn = document.createElement('button');
+  copyBtn.id = 'copy-infographic';
+  copyBtn.textContent = '📋 Copy to clipboard';
+  copyBtn.addEventListener('click', copyInfographicToClipboard);
+  infographic.append(copyBtn);
 }
 // Add a stacked histogram for age group attendance by gender and PB status
 function createAgeGroupHistogram(target, meta) {
@@ -534,8 +622,13 @@ function createAgeGroupHistogram(target, meta) {
   // Set the histogram height to match the donut diameter, plus extra for top labels (380px)
   canvas.height = 380;
 
-  // Chart.js option: add extra top padding to chart area so top labels never overlap bars
-  const extraTopPadding = 36; // px
+  // The total above each bar is drawn TOTAL_LABEL_OFFSET px above the bar top
+  // with a 'bottom' baseline, so it occupies a further TOTAL_LABEL_SIZE px above
+  // that. The tallest bar reaches the top of the chart area, so the padding has
+  // to cover the whole label or it gets cut off by the canvas edge.
+  const TOTAL_LABEL_OFFSET = 24; // px above the bar
+  const TOTAL_LABEL_SIZE = 20; // px font size of the total
+  const extraTopPadding = TOTAL_LABEL_OFFSET + TOTAL_LABEL_SIZE + 8; // + stroke
   fig.append(canvas);
   target.append(fig);
 
@@ -729,11 +822,11 @@ function createAgeGroupHistogram(target, meta) {
               if (stackTotal > 0) {
                 const bar = chart.getDatasetMeta(0).data[i];
                 const xCenter = bar.x;
-                let yAbove = minY - 24; // 24px above the top of the bar for more space
-                // Ensure the label is always above the bar, but never overlaps it or goes off the canvas
-                // The extraTopPadding ensures minY is never too close to the top
+                // Keep the whole label on the canvas: never let its top edge go
+                // above the stroke width, however tall the bar is.
+                const yAbove = Math.max(minY - TOTAL_LABEL_OFFSET, TOTAL_LABEL_SIZE + 4);
                 ctx.save();
-                ctx.font = 'bold 20px sans-serif';
+                ctx.font = `bold ${TOTAL_LABEL_SIZE}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
                 ctx.lineWidth = 4;
@@ -995,8 +1088,12 @@ function addLegendToKey(key, data, chartId, rawConfig) {
     const legendItem = document.createElement('div');
     legendItem.style.backgroundColor = data.datasets[0].backgroundColor[index];
     legendItem.textContent = label;
-    // Make key text black except for 'None' and 'First ever!'
-    if (label === 'None' || label === 'First ever!') {
+    // The milestone swatches are all dark, so that key reads white throughout.
+    if (chartId === 'dmilestones') {
+      legendItem.style.color = 'white';
+      legendItem.style.fontWeight = 'bold';
+    } else if (label === 'None' || label === 'First ever!') {
+      // Make key text black except for 'None' and 'First ever!'
       legendItem.style.color = 'white';
     } else {
       legendItem.style.color = 'black';

@@ -1,0 +1,261 @@
+/* Printable roster overlay for /futureroster/ pages */
+
+#pr-overlay,
+#pr-banner {
+    --pr-purple: #2b233d;
+    --pr-orange: #ffa300;
+}
+
+#pr-banner {
+    background: #2b233d;
+    color: white;
+    font-size: 1.1rem;
+    padding: 0.8em 1em;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+#pr-banner-link {
+    background: none;
+    border: none;
+    color: #ffa300;
+    font: inherit;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+}
+
+#pr-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    background: #55596b;
+    overflow: auto;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 1em;
+}
+
+.pr-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75em 1.25em;
+    background: #2b233d;
+    color: white;
+    border-radius: 0.4em;
+    padding: 0.8em 1.2em;
+}
+
+.pr-control {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.pr-controls select {
+    font: inherit;
+    padding: 0.2em;
+}
+
+.pr-controls button {
+    font: inherit;
+    font-weight: bold;
+    padding: 0.4em 1.2em;
+    border-radius: 0.4em;
+    cursor: pointer;
+    border: solid 2px #ffa300;
+    background: #ffa300;
+    color: #2b233d;
+}
+
+.pr-controls .pr-close {
+    background: none;
+    color: white;
+}
+
+/* A4 portrait, with 10mm margins left for the printer. */
+.pr-page {
+    width: 210mm;
+    height: 297mm;
+    background: white;
+    color: black;
+    box-shadow: 0 0.2em 1em rgba(0, 0, 0, 0.4);
+    flex: none;
+}
+
+#pr-sheet {
+    width: 100%;
+    height: 100%;
+    padding: 10mm;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* font-size is set by the auto-fit routine; everything below scales in em */
+}
+
+.pr-sheet-header {
+    flex: none;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1em;
+    border-bottom: solid 2px var(--pr-purple);
+    padding-bottom: 0.3em;
+    margin-bottom: 0.5em;
+}
+
+.pr-sheet-header h1 {
+    font-size: 1.4em;
+    margin: 0;
+    line-height: 1.1;
+    color: var(--pr-purple);
+}
+
+.pr-date {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.1;
+    white-space: nowrap;
+    color: var(--pr-purple);
+}
+
+.pr-columns {
+    flex: 1;
+    min-height: 0;
+    column-gap: 1.5em;
+    column-rule: solid 1px #999;
+    /* column-count is set by the auto-fit routine */
+}
+
+.pr-entry {
+    break-inside: avoid;
+    margin-bottom: 0.6em;
+}
+
+.pr-role {
+    font-size: 1em;
+    margin: 0;
+    color: var(--pr-purple);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-bottom: solid 1px #bbb;
+    /* Role titles wrap between words only -- breaking mid-word ("PARKWALKE/R")
+       is unreadable. The auto-fit routine detects the resulting overflow and
+       settles on a size and column count where whole words fit. */
+    overflow-wrap: normal;
+}
+
+.pr-slots {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pr-slot {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.12em 0;
+}
+
+.pr-box {
+    flex: none;
+    width: 1em;
+    height: 1em;
+    border: solid 1.5px black;
+    border-radius: 0.15em;
+}
+
+.pr-name {
+    font-size: 1.05em;
+    line-height: 1.2;
+    /* Take all the width the slot has, so long names get every pixel the
+       gutter gave back before the shrink-to-one-line pass kicks in. */
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+.pr-surname {
+    color: var(--pr-orange);
+    font-weight: bold;
+}
+
+/* Unfilled slots print as a rule to write a name on. */
+.pr-empty {
+    flex: 1;
+    border-bottom: dotted 1.5px #666;
+    height: 1em;
+}
+
+/* Titles beside names: role label in a fixed-width gutter. */
+.pr-entry.pr-horizontal {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+}
+
+.pr-entry.pr-horizontal .pr-role {
+    flex: none;
+    /* Measured from the widest title actually rendered, so short role names
+       give their spare width back to the names column. */
+    width: var(--pr-gutter, 9.5em);
+    border-bottom: none;
+    border-right: solid 1px #bbb;
+    padding-right: 0.4em;
+    text-align: right;
+}
+
+.pr-entry.pr-horizontal .pr-slots {
+    flex: 1;
+    min-width: 0;
+}
+
+@media print {
+    /* Hide the parkrun page, print only the sheet. */
+    body.pr-printing > *:not(#pr-overlay) {
+        display: none !important;
+    }
+
+    body.pr-printing {
+        background: white;
+    }
+
+    #pr-overlay {
+        position: static;
+        display: block;
+        background: none;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .pr-controls {
+        display: none;
+    }
+
+    .pr-page {
+        width: auto;
+        height: auto;
+        box-shadow: none;
+    }
+
+    #pr-sheet {
+        /* @page supplies the margin when printing. */
+        padding: 0;
+        height: 277mm;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+    }
+}

@@ -1,12 +1,12 @@
 {
   "name": "parkruneventsummary",
-  "version": "1.1.0",
-  "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
+  "version": "1.2.0",
+  "description": "Generate a shareable infographic from parkrun results, and a printable one-page volunteer roster for Run Directors.",
   "main": "script.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm pes.xpi;zip -u -8 -v -r pes.zip manifest.json src i;cp pes.zip pes.xpi;"
+    "build": "rm -f pes.zip pes.xpi && zip -9 -r pes.zip manifest.json src -x '*.DS_Store' && cp pes.zip pes.xpi"
   },
   "author": "Rich Boakes <rich@boakes.org>",
   "license": "ISC",

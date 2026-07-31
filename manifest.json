@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "parkrun Event Summary",
-  "version": "1.1.0",
-  "description": "A tool for Run Directors or interested third parties to generate a nice infographic for sharing.",
+  "version": "1.2.0",
+  "description": "Generate a shareable infographic from parkrun results, and a printable one-page volunteer roster for Run Directors.",
   "icons": {
     "16": "src/i/logo16.png",
     "48": "src/i/logo48.png",
@@ -35,11 +35,41 @@
         "*://*.parkrun.us/*/results/*"
       ],
     
-     "js": ["src/lib/chart.js", "src/lib/labels.js", "src/script.js"],
+     "js": ["src/lib/chart.js", "src/lib/labels.js", "src/lib/html2canvas.min.js", "src/script.js"],
       "run_at": "document_end",
       "css" : ["src/style.css"]
-     }
+     },
+    {
+      "matches": [
+        "*://*.parkrun.ca/*/futureroster/*",
+        "*://*.parkrun.co.at/*/futureroster/*",
+        "*://*.parkrun.co.nl/*/futureroster/*",
+        "*://*.parkrun.co.nz/*/futureroster/*",
+        "*://*.parkrun.co.za/*/futureroster/*",
+        "*://*.parkrun.com.au/*/futureroster/*",
+        "*://*.parkrun.com.de/*/futureroster/*",
+        "*://*.parkrun.dk/*/futureroster/*",
+        "*://*.parkrun.fi/*/futureroster/*",
+        "*://*.parkrun.fr/*/futureroster/*",
+        "*://*.parkrun.ie/*/futureroster/*",
+        "*://*.parkrun.it/*/futureroster/*",
+        "*://*.parkrun.jp/*/futureroster/*",
+        "*://*.parkrun.lt/*/futureroster/*",
+        "*://*.parkrun.my/*/futureroster/*",
+        "*://*.parkrun.no/*/futureroster/*",
+        "*://*.parkrun.org.uk/*/futureroster/*",
+        "*://*.parkrun.pl/*/futureroster/*",
+        "*://*.parkrun.ru/*/futureroster/*",
+        "*://*.parkrun.se/*/futureroster/*",
+        "*://*.parkrun.sg/*/futureroster/*",
+        "*://*.parkrun.us/*/futureroster/*"
+      ],
+      "js": ["src/roster.js"],
+      "run_at": "document_end",
+      "css": ["src/roster.css"]
+    }
   ],
+  "permissions": ["clipboardWrite"],
   "web_accessible_resources": [
     {
       "resources": ["src/i/*.svg"],
