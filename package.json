@@ -1,6 +1,6 @@
 {
   "name": "parkruneventsummary",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Generate a shareable infographic from parkrun results, and a printable one-page volunteer roster for Run Directors.",
   "main": "script.js",
   "type": "module",

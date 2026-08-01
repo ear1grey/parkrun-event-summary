@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "parkrun Event Summary",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Generate a shareable infographic from parkrun results, and a printable one-page volunteer roster for Run Directors.",
   "icons": {
     "16": "src/i/logo16.png",

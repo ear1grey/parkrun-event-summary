@@ -110,11 +110,15 @@
 }
 
 /* The stat columns either side of the milestones donut: let them take up any
-   spare width in the row so their text and icons can grow into it. */
+   spare width in the row so their text and icons can grow into it, and keep
+   their text clear of the infographic's edges. */
 #gcharts .group#g1 {
     flex: 1 1 var(--width);
     min-width: var(--width);
     width: auto;
+    box-sizing: border-box;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 #infographic {
@@ -233,6 +237,14 @@
     display: flex;
     align-items: center;
     border: solid thin white;
+    /* White with a black outline keeps every key legible whatever the swatch
+       colour behind it, and consistent across the whole graphic. The stroke is
+       painted behind the fill so it outlines the glyphs instead of thinning
+       them; keep it light or the counters close up at this size. */
+    color: white;
+    font-weight: bold;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 1.5px black;
 }
 
 #main #linkToChromeExtension {

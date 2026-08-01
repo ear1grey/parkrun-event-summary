@@ -123,12 +123,16 @@ function createGenderDonut(target, meta) {
   const config = {
     id: 'gender-donut',
     message: `<h1>${participants}</h1><p>Participants</p>`,
+    // Fixed order, never sorted by value: 'Other' sits between M and F so it is
+    // never adjacent to 'No Barcode'. They mean different things -- 'Other' is a
+    // named runner whose gender isn't recorded, 'No Barcode' is an unidentified
+    // finisher -- and placing them side by side implies they are related.
     raw: [
       { label: 'M', value: meta.genders.male, color: genderColours.male },
       { label: 'Other', value: meta.genders.other, color: genderColours.other },
       { label: 'F', value: meta.genders.female, color: genderColours.female },
       { label: 'No Barcode', value: meta.genders.unknown, color: genderColours.unknown },
-    ].sort((a, b) => b.value - a.value), // Sort descending by value
+    ],
   };
   createDonut(target, config);
 }
@@ -252,24 +256,6 @@ function createDonut(target, config) {
     }
   }
 
-  // For PB donut, add 'PBs:' label before the key
-  if (config.id === 'donut-pb') {
-    const pbLabel = document.createElement('div');
-    pbLabel.textContent = 'PBs:';
-    pbLabel.style.fontWeight = 'bold';
-    pbLabel.style.marginBottom = '4px';
-    pbLabel.style.border = 'none'; // No border on PBs: label
-    key.append(pbLabel);
-  }
-  // For gender donut, add 'Gender:' label before the key
-  if (config.id === 'gender-donut') {
-    const genderLabel = document.createElement('div');
-    genderLabel.textContent = 'Gender:';
-    genderLabel.style.fontWeight = 'bold';
-    genderLabel.style.marginBottom = '4px';
-    genderLabel.style.border = 'none';
-    key.append(genderLabel);
-  }
   addLegendToKey(key, data, config.id, config.raw);
 
   // Prepare the options for the chart
@@ -1088,16 +1074,8 @@ function addLegendToKey(key, data, chartId, rawConfig) {
     const legendItem = document.createElement('div');
     legendItem.style.backgroundColor = data.datasets[0].backgroundColor[index];
     legendItem.textContent = label;
-    // The milestone swatches are all dark, so that key reads white throughout.
-    if (chartId === 'dmilestones') {
-      legendItem.style.color = 'white';
-      legendItem.style.fontWeight = 'bold';
-    } else if (label === 'None' || label === 'First ever!') {
-      // Make key text black except for 'None' and 'First ever!'
-      legendItem.style.color = 'white';
-    } else {
-      legendItem.style.color = 'black';
-    }
+    // Every key reads white with a black outline, so the text stays legible on
+    // both light and dark swatches and looks consistent across the graphic.
     key.append(legendItem);
   });
 }
